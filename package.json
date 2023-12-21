@@ -1,0 +1,45 @@
+{
+  "name": "opas",
+  "version": "0.0.0",
+  "description": "Open API toolkits for TS/JS",
+  "workspaces": [
+    "packages/*",
+    "plugins/*"
+  ],
+  "scripts": {
+    "test": "lerna run test",
+    "build": "lerna run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kagawagao/opas.git"
+  },
+  "keywords": [
+    "openAPI",
+    "api",
+    "toolkit"
+  ],
+  "author": "kagawagao <kingsongao1221@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kagawagao/opas/issues"
+  },
+  "homepage": "https://github.com/kagawagao/opas#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/preset-typescript": "^7.23.3",
+    "@opd/eslint-config": "^2.0.1",
+    "@opd/prettier-config": "^2.0.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^29.5.11",
+    "@types/json2md": "^1.5.4",
+    "@types/lodash": "^4.14.202",
+    "dts-bundle-generator": "^9.0.0",
+    "jest": "^29.7.0",
+    "lerna": "^8.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "prettier": "@opd/prettier-config"
+}

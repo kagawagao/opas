@@ -1,0 +1,20 @@
+{
+  "name": "@opas/plugin-app",
+  "version": "0.0.0",
+  "description": "app plugin for OpenAPI Toolkit",
+  "main": "lib/index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kagawagao/opas.git"
+  },
+  "author": "kagawagao <kingsongao1221@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kagawagao/opas/issues"
+  },
+  "homepage": "https://github.com/kagawagao/opas#readme"
+}

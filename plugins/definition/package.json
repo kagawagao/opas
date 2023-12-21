@@ -1,0 +1,34 @@
+{
+  "name": "@opas/plugin-definition",
+  "version": "0.0.0",
+  "description": "definition plugin for OpenAPI Toolkit",
+  "main": "lib/index.js",
+  "types": "index.d.ts",
+  "files": [
+    "lib",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "test": "jest",
+    "prebuild": "tsc --build --clean",
+    "build": "npm run build:tsc && npm run build:dts",
+    "build:tsc": "tsc --build",
+    "build:dts": "dts-bundle-generator --project ./tsconfig.json --out-file ./index.d.ts ./src/index.ts --no-check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kagawagao/opas.git"
+  },
+  "keywords": [],
+  "author": "kagawagao <kingsongao1221@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kagawagao/opas/issues"
+  },
+  "homepage": "https://github.com/kagawagao/opas#readme",
+  "dependencies": {
+    "@opas/core": "^0.0.0",
+    "@opas/helper": "^0.0.0",
+    "fs-extra": "^11.2.0"
+  }
+}

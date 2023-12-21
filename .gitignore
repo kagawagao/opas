@@ -128,3 +128,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# build output
+packages/**/lib
+packages/**/index.d.ts
+plugins/**/lib
+plugins/**/index.d.ts
+fixtures
