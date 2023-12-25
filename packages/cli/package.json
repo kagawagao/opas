@@ -38,5 +38,6 @@
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/kagawagao/opas.git"
-  }
+  },
+  "gitHead": "21829677e05508fb6fb9ba234a2a3db2985d48d3"
 }
