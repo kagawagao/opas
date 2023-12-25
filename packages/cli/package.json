@@ -27,7 +27,7 @@
     "@babel/runtime": "^7.23.2",
     "@opas/core": "^0.0.3",
     "@opas/plugin-app": "^0.0.3",
-    "chalk": "4.1.2",
+    "chalk": "5.3.0",
     "commander": "^11.1.0",
     "cosmiconfig": "^8.3.6",
     "signale": "^1.4.0"
