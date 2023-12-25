@@ -13,7 +13,8 @@
     "prebuild": "tsc --build --clean",
     "build": "npm run build:tsc && npm run build:dts",
     "build:tsc": "tsc --build",
-    "build:dts": "dts-bundle-generator --project ./tsconfig.json --out-file ./index.d.ts ./src/index.ts --no-check"
+    "build:dts": "dts-bundle-generator --project ./tsconfig.json --out-file ./index.d.ts ./src/index.ts --no-check",
+    "preversion": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,8 @@
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
     "camelcase": "^6.3.0",
-    "prettier": "^3.1.1"
+    "dtsgenerator": "^3.19.1",
+    "prettier": "^3.1.1",
+    "signale": "^1.4.0"
   }
 }

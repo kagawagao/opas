@@ -1,12 +1,5 @@
-import {
-  OpenAPIPlugin,
-  OpenAPIPluginOptions,
-  OpenApis,
-  ParameterV2,
-  ParserResult,
-  SchemaApi,
-  SchemaJsonV2,
-} from '@opas/core'
+import { OpenAPIPlugin, OpenAPIPluginOptions, ParserResult } from '@opas/core'
+import { OpenAPISchemaJSON, ParameterV2, ParsedOperation, SchemaJsonV2 } from '@opas/helper'
 import fs from 'fs-extra'
 import json2md from 'json2md'
 import { kebabCase } from 'lodash'
@@ -79,31 +72,40 @@ export type TagAliasMapper = (tag: string) => string
 
 export interface OpenAPITransformDocPluginOptions extends OpenAPIPluginOptions {
   /**
-   * 输出目录
+   * output dir
    */
-  output?: string
+  outputDir?: string
   /**
-   * 是否以 tags 分组
+   * grouped by tag
    */
   grouped?: boolean
   /**
-   * 是否跳过文件输出
+   * skip output
    */
   skipOutput?: boolean
   /**
-   * 成功回调
+   * on success callback
    */
   onSuccess?: (result: Record<string, string>) => void
+  /**
+   * tag alias mapper
+   */
   tagAlias?: TagAliasMapper | Record<string, string>
-  include?: ((api: SchemaApi) => boolean) | RegExp | string[]
-  exclude?: ((api: SchemaApi) => boolean) | RegExp | string[]
+  /**
+   * include apis
+   */
+  include?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  /**
+   * exclude apis
+   */
+  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[]
 }
 
 export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITransformDocPluginOptions> {
   public transform = async ({ service, apis, schema }: ParserResult) => {
     const {
       cwd = process.cwd(),
-      output = path.resolve(cwd, 'docs'),
+      outputDir = path.resolve(cwd, 'docs'),
       tagAlias,
       grouped,
       include,
@@ -113,14 +115,14 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
     } = this.options
 
     if (!skipOutput) {
-      await fs.ensureDir(output)
+      await fs.ensureDir(outputDir)
     }
 
-    const content = schema.content as OpenApis
+    const content = schema.content as OpenAPISchemaJSON
     // 理论上来说，这里的 tags 包含了所有的 tag
     const { tags = [] } = content
 
-    const groupedApis: Record<string, SchemaApi[]> = {}
+    const groupedApis: Record<string, ParsedOperation[]> = {}
     if (grouped) {
       tags.forEach((tag) => {
         const groupName = typeof tagAlias === 'function' ? tagAlias(tag.name) : tagAlias ? tagAlias[tag.name] : tag.name
@@ -134,7 +136,7 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
     const result: Record<string, string> = {}
     await Promise.all(
       Object.entries(groupedApis).map(async ([groupName, apis]) => {
-        const filePath = path.resolve(output, `${groupName}.md`)
+        const filePath = path.resolve(outputDir, `${groupName}.md`)
         const markdown: json2md.DataObject[] = [
           // {
           //   h1: groupName,

@@ -1,0 +1,42 @@
+{
+  "name": "@opas/cli",
+  "version": "0.0.0",
+  "description": "command line tools which bundle opas",
+  "author": "kagawagao <kingsongao1221@gmail.com>",
+  "homepage": "",
+  "license": "MIT",
+  "bin": {
+    "oasis": "bin/index.js"
+  },
+  "types": "index.d.ts",
+  "directories": {
+    "test": "__tests__"
+  },
+  "files": [
+    "bin",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "prebuild": "tsc --build --clean",
+    "build": "npm run build:tsc && npm run build:dts",
+    "build:tsc": "tsc --build",
+    "build:dts": "dts-bundle-generator --project ./tsconfig.json --out-file ./index.d.ts ./src/index.ts --no-check",
+    "preversion": "npm run build"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.23.2",
+    "@opas/core": "^0.0.0",
+    "@opas/plugin-app": "^0.0.0",
+    "chalk": "4.1.2",
+    "commander": "^11.1.0",
+    "cosmiconfig": "^8.3.6",
+    "signale": "^1.4.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kagawagao/opas.git"
+  }
+}

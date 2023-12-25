@@ -9,7 +9,7 @@ export interface OpenAPIPluginOptions {
 }
 
 export default abstract class OpenAPIPlugin<T extends OpenAPIPluginOptions> implements IOpenAPIPlugin {
-  protected options: T
+  public options: T
   constructor(options: T) {
     this.options = options || {}
   }

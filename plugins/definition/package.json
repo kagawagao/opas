@@ -9,11 +9,12 @@
     "index.d.ts"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "prebuild": "tsc --build --clean",
     "build": "npm run build:tsc && npm run build:dts",
     "build:tsc": "tsc --build",
-    "build:dts": "dts-bundle-generator --project ./tsconfig.json --out-file ./index.d.ts ./src/index.ts --no-check"
+    "build:dts": "dts-bundle-generator --project ./tsconfig.json --out-file ./index.d.ts ./src/index.ts --no-check",
+    "preversion": "npm run build"
   },
   "repository": {
     "type": "git",

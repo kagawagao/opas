@@ -1,32 +1,25 @@
 {
-  "name": "@opas/core",
+  "name": "@opas/plugin-sdk",
   "version": "0.0.0",
-  "description": "core of OpenAPIToolkit",
+  "description": "sdk plugin for OpenAPI toolkit",
   "main": "lib/index.js",
-  "types": "lib",
+  "types": "index.d.ts",
   "files": [
     "lib",
     "index.d.ts"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "prebuild": "tsc --build --clean",
-    "build": "npm run build:tsc",
+    "build": "npm run build:tsc && npm run build:dts",
     "build:tsc": "tsc --build",
+    "build:dts": "dts-bundle-generator --project ./tsconfig.json --out-file ./index.d.ts ./src/index.ts --no-check",
     "preversion": "npm run build"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/kagawagao/opas.git"
   },
-  "keywords": [
-    "openapi",
-    "toolkit",
-    "api"
-  ],
   "author": "kagawagao <kingsongao1221@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -34,9 +27,12 @@
   },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
-    "@dtsgenerator/replace-namespace": "^1.6.0",
+    "@babel/generator": "^7.23.6",
+    "@babel/template": "^7.22.15",
+    "@babel/types": "^7.23.6",
+    "@opas/core": "^0.0.0",
     "@opas/helper": "^0.0.0",
-    "dtsgenerator": "^3.19.1",
+    "fs-extra": "^11.2.0",
     "lodash": "^4.17.21"
   }
 }

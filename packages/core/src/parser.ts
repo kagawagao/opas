@@ -1,29 +1,17 @@
-import { camelCase, formatApiUri, pascalCase } from '@opas/helper'
+import {
+  OpenAPISchemaJSON,
+  Operation,
+  ParsedOperation,
+  PathItem,
+  ServiceDescriptor,
+  camelCase,
+  formatApiUri,
+  pascalCase,
+} from '@opas/helper'
 import dtsGenerator, { Schema, readSchemaFromUrl, readSchemasFromFile } from 'dtsgenerator'
 import { OpenApisV2 } from 'dtsgenerator/dist/core/openApiV2'
 import { OpenApisV3 } from 'dtsgenerator/dist/core/openApiV3'
 import { uniqueId } from 'lodash'
-
-export type OpenApis = OpenApisV2.SchemaJson | OpenApisV3.SchemaJson
-
-export type SchemaJsonV2 = OpenApisV2.SchemaJson
-
-export type PathItem = OpenApisV2.SchemaJson.Definitions.PathItem | OpenApisV3.SchemaJson.Definitions.PathItem
-
-export type Operation = OpenApisV2.SchemaJson.Definitions.Operation | OpenApisV3.SchemaJson.Definitions.Operation
-
-export type ParametersList = OpenApisV2.SchemaJson.Definitions.ParametersList
-
-export type ParameterV2 = OpenApisV2.SchemaJson.Definitions.Parameter
-
-export interface ServiceDescriptor {
-  name: string
-  title: string
-  description: string
-  version: string
-  host: string
-  basePath: string
-}
 
 export interface ParserOptions {
   /**
@@ -36,18 +24,10 @@ export interface ParserOptions {
   url: string
 }
 
-export type SchemaApi = Operation & {
-  uri: string
-  rawUri: string
-  formattedUri: string
-  method: string
-  operationId: string
-}
-
 export interface ParserResult extends Record<string, any> {
   schema: Schema
   definition: string
-  apis: SchemaApi[]
+  apis: ParsedOperation[]
   service: ServiceDescriptor
 }
 
@@ -73,7 +53,7 @@ export default class OpenAPIParser {
       this.parseService(),
     ])
 
-    if (!(schema.content as OpenApis).tags) {
+    if (!(schema.content as OpenAPISchemaJSON).tags) {
       const tags: string[] = []
       apis.forEach((api) => {
         tags.push(...(api.tags || []))
@@ -81,7 +61,7 @@ export default class OpenAPIParser {
 
       const tagSet = new Set(tags)
 
-      ;(schema.content as OpenApis).tags = Array.from(tagSet).map((tag) => ({
+      ;(schema.content as OpenAPISchemaJSON).tags = Array.from(tagSet).map((tag) => ({
         name: tag,
         description: tag,
       }))
@@ -138,8 +118,8 @@ export default class OpenAPIParser {
    * parse apis from open api json schema
    */
   public parseApis = () => {
-    const content = this.schema.content as OpenApis
-    const apis: SchemaApi[] = []
+    const content = this.schema.content as OpenAPISchemaJSON
+    const apis: ParsedOperation[] = []
     const { paths } = content
     for (const uri in paths) {
       const pathItem = paths[uri] as PathItem
