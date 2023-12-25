@@ -25,6 +25,9 @@
   "bugs": {
     "url": "https://github.com/kagawagao/opas/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
     "@babel/generator": "^7.23.6",
@@ -34,6 +37,5 @@
     "@opas/helper": "^0.0.2",
     "fs-extra": "^11.2.0",
     "lodash": "^4.17.21"
-  },
-  "gitHead": "21829677e05508fb6fb9ba234a2a3db2985d48d3"
+  }
 }

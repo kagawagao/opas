@@ -25,11 +25,13 @@
   "bugs": {
     "url": "https://github.com/kagawagao/opas/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
     "@opas/core": "^0.0.2",
     "fs-extra": "^11.2.0",
     "json2md": "^2.0.0"
-  },
-  "gitHead": "21829677e05508fb6fb9ba234a2a3db2985d48d3"
+  }
 }
