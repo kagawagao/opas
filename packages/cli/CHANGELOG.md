@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/kagawagao/opas/compare/v0.0.4...v0.0.5) (2023-12-26)
+
+
+### Bug Fixes
+
+* **cli:** fix interface name ([6dfc659](https://github.com/kagawagao/opas/commit/6dfc659e4d4ae7b20cb8afb0e7cb1a5f0f8adba5))
+
+
+
+
+
 ## [0.0.4](https://github.com/kagawagao/opas/compare/v0.0.3...v0.0.4) (2023-12-26)
 
 
