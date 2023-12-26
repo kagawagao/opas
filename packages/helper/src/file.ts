@@ -30,7 +30,7 @@ async function checkToOverwrite(writeFileMode: WriteFileMode | string, outFileNa
     }
     if (writeFileMode === WriteFileMode.warn) {
       signale.warn(chalk.yellowBright(existedTip))
-      return true
+      return false
     }
     if (writeFileMode === WriteFileMode.overwrite) {
       return true
