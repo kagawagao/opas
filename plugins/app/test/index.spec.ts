@@ -13,6 +13,7 @@ describe('doc', () => {
           new OpenAPITransformAppPlugin({
             apiDir: path.resolve(__dirname, './fixtures/apis'),
             serviceDir: path.resolve(__dirname, './fixtures/services'),
+            dtsDir: path.resolve(__dirname, './fixtures/interfaces'),
           }),
         ],
       },
@@ -32,6 +33,7 @@ describe('doc', () => {
           new OpenAPITransformAppPlugin({
             apiDir: path.resolve(__dirname, './fixtures/apis'),
             serviceDir: path.resolve(__dirname, './fixtures/services'),
+            dtsDir: path.resolve(__dirname, './fixtures/interfaces'),
           }),
         ],
       },
