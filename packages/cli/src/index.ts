@@ -52,7 +52,7 @@ export interface Config {
   extractField?: string
 }
 
-export interface OasisConfig {
+export interface OpasConfig {
   /**
    * 配置项
    */
@@ -117,7 +117,7 @@ program
         env: globalEnv,
         base: globalBase,
         extractField: globalExtractField,
-      } = config as OasisConfig
+      } = config as OpasConfig
       await OpenAPIRunner.run(
         configs
           .filter(({ namespace, url }) => {
