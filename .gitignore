@@ -130,8 +130,10 @@ dist
 .pnp.*
 
 # build output
+packages/**/bin
 packages/**/lib
 packages/**/index.d.ts
 plugins/**/lib
+plugins/**/bin
 plugins/**/index.d.ts
 fixtures

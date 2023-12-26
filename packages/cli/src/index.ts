@@ -8,7 +8,7 @@ import { CosmiconfigResult, cosmiconfig } from 'cosmiconfig'
 import path from 'path'
 import signale from 'signale'
 
-const configExplore = cosmiconfig('oasis')
+const configExplore = cosmiconfig('opas')
 
 const workDir = process.cwd()
 
