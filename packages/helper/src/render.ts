@@ -89,7 +89,7 @@ function createResponse(options: CreateResponseOptions) {
       const fields = Array.isArray(extractField) ? extractField : [extractField]
       const identifier = fields.reduce(
         (prev, cur) => {
-          return `Required<${prev}>[${cur}]`
+          return `Required<${prev}>['${cur}']`
         },
         `${serviceNamespace}${isV3 ? '.Schemas' : ''}.${response}`,
       )
