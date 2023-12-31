@@ -136,7 +136,7 @@ export interface ApiCreateOptions {
    * 类型提取中进一步提取的字段
    * @example extractField = 'data'
    */
-  extractField?: string
+  extractField?: string | string[]
 }
 
 export type WriteFileOptions = {
@@ -157,7 +157,7 @@ export interface CreateResponseOptions {
   operationId: string
   service: string
   isV3: boolean
-  extractField?: string
+  extractField?: string | string[]
 }
 
 export type OpenAPISchemaJSON = OpenApisV2.SchemaJson | OpenApisV3.SchemaJson

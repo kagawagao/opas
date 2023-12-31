@@ -34,7 +34,7 @@ export interface OpenAPITransformAppPluginOptions extends OpenAPIPluginOptions {
    * 类型提取中进一步提取的字段
    * @example extractField = 'data'
    */
-  extractField?: string
+  extractField?: string | string[]
   baseUrl?: string | ((extractPath?: string) => void)
   /**
    * 值为WriteMode ，则 api 和 service都用这个类型.

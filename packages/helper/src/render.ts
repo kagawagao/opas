@@ -86,7 +86,14 @@ function createResponse(options: CreateResponseOptions) {
       return t.identifier('void')
     } else if (extractField) {
       // need extract field
-      return t.identifier(`Required<${serviceNamespace}${isV3 ? '.Schemas' : ''}.${response}>['${extractField}']`)
+      const fields = Array.isArray(extractField) ? extractField : [extractField]
+      const identifier = fields.reduce(
+        (prev, cur) => {
+          return `Required<${prev}>[${cur}]`
+        },
+        `${serviceNamespace}${isV3 ? '.Schemas' : ''}.${response}`,
+      )
+      return t.identifier(identifier)
     }
     return t.identifier(`${serviceNamespace}${isV3 ? '.Schemas' : ''}.${response}`)
   } else {
