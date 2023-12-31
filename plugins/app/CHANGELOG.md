@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/kagawagao/opas/compare/v0.0.7...v0.1.0) (2023-12-31)
+
+
+### Features
+
+* support nested extract fields ([497e37d](https://github.com/kagawagao/opas/commit/497e37def83631246f02bce5b2b39d072d771ab6))
+
+
+
+
+
 ## [0.0.7](https://github.com/kagawagao/opas/compare/v0.0.6...v0.0.7) (2023-12-26)
 
 **Note:** Version bump only for package @opas/plugin-app
