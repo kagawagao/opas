@@ -102,12 +102,12 @@ function createResponse(options: CreateResponseOptions) {
 }
 
 function addComments(node: any, comment: string[]) {
-  const value = comment.map((str) => `*\n* ${str} \n`)
+  const value = comment.map((str, index) => `*\n* ${str}`).join('\n') + '\n'
   return t.addComments(node, 'leading', [
     {
       type: 'CommentBlock',
       value,
-    } as any,
+    },
   ])
 }
 
@@ -202,7 +202,16 @@ function paramsTypeAst(name: string) {
 }
 
 function createItem(api: ParsedOperation, options: ApiCreateOptions = {}): API {
-  const { method, uri, rawUri, summary = '', parameters = [], responses, operationId = '' } = api
+  const {
+    method,
+    uri,
+    rawUri,
+    description = '',
+    summary = description,
+    parameters = [],
+    responses,
+    operationId = '',
+  } = api
   const { urlFormatter = (url) => url, nameFormatter = formatApiName } = options
   const temp: API = {
     method: method.toString(),
@@ -242,7 +251,15 @@ export function createRenderer(templateSource: string, options?: ApiCreateOption
     }, {})
 
     const astNode = templateAst(neededArgs)
-    const withCommentsNode = addComments(astNode, [summary])
+    const withCommentsNode = addComments(
+      astNode,
+      [
+        summary,
+        api.description && api.description !== summary ? `@description ${api.description}` : '',
+        api.deprecated ? '@deprecated' : '',
+        api.externalDocs?.url ? `@see ${api.externalDocs?.url}` : '',
+      ].filter(Boolean),
+    )
     const { code } = generate(withCommentsNode)
     return code
   }
