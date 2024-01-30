@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/kagawagao/opas/compare/v0.2.0...v0.3.0) (2024-01-30)
+
+
+### Features
+
+* rename bin name ([1e62f77](https://github.com/kagawagao/opas/commit/1e62f77647756984ece2c68f5534ddb63c5894e2))
+
+
+
+
+
 # [0.2.0](https://github.com/kagawagao/opas/compare/v0.1.1...v0.2.0) (2024-01-30)
 
 
