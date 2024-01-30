@@ -6,7 +6,7 @@
   "homepage": "",
   "license": "MIT",
   "bin": {
-    "oasis": "bin/index.js"
+    "opas": "bin/index.js"
   },
   "types": "index.d.ts",
   "directories": {
