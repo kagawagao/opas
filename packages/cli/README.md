@@ -7,3 +7,8 @@
 ```bash
 npx @opas/cli --help
 ```
+
+## Commands
+
+- `init`: Initialize `opas` config file
+- `app`: Generate API client from OpenAPI 2/3 spec
