@@ -161,7 +161,7 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
     const serviceName = service.name
     const importee = formatService(serviceName)
     const serviceFileName = kebabCase(serviceName)
-    const importer = path.join(DEFAULT_SERVICE_DIR, serviceFileName)
+    const importer = path.posix.join(DEFAULT_SERVICE_DIR, serviceFileName)
     return `import ${importee} from '${importer}';`
   }
 
