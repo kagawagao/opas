@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2](https://github.com/kagawagao/opas/compare/v0.3.1...v0.3.2) (2024-04-15)
+
+
+### Bug Fixes
+
+* compatible with writing path under windows ([#49](https://github.com/kagawagao/opas/issues/49)) ([5342faa](https://github.com/kagawagao/opas/commit/5342faa5dc92030eb22baded96320387f978e9d8))
+
+
+
+
+
 # [0.3.0](https://github.com/kagawagao/opas/compare/v0.2.0...v0.3.0) (2024-01-30)
 
 **Note:** Version bump only for package @opas/plugin-app
