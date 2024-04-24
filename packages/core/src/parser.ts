@@ -22,6 +22,10 @@ export interface ParserOptions {
    * OpenAPI schema json url, a http(s) url or file path
    */
   url: string
+  /**
+   * post process schema
+   */
+  postSchema?: (schema: Schema) => PromiseLike<Schema> | Schema
 }
 
 export interface ParserResult extends Record<string, any> {
@@ -35,11 +39,13 @@ export default class OpenAPIParser {
   public schema: Schema
   public url: string
   public namespace: string
+  public postSchema?: (schema: Schema) => PromiseLike<Schema> | Schema
 
   public constructor(options: ParserOptions) {
     this.url = options.url
     this.namespace = options.namespace
     this.schema = {} as Schema
+    this.postSchema = options.postSchema
   }
   /**
    * parse open api json schema
@@ -87,6 +93,10 @@ export default class OpenAPIParser {
       const schemas = await readSchemasFromFile(url)
 
       this.schema = schemas[0]
+    }
+    // post process schema
+    if (this.postSchema) {
+      this.schema = await this.postSchema(this.schema)
     }
     return this.schema
   }

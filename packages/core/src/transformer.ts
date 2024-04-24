@@ -1,9 +1,7 @@
-import OpenAPIParser from './parser'
+import OpenAPIParser, { ParserOptions } from './parser'
 import OpenAPIPlugin, { OpenAPIPluginOptions } from './plugin'
 
-export interface TransformerOptions {
-  url: string
-  namespace: string
+export interface TransformerOptions extends ParserOptions {
   plugins?: OpenAPIPlugin<OpenAPIPluginOptions>[]
 }
 
@@ -11,10 +9,10 @@ export default class OpenAPITransformer {
   public options: TransformerOptions
   public parser: OpenAPIParser
   public plugins: OpenAPIPlugin<OpenAPIPluginOptions>[]
-  constructor(options: TransformerOptions) {
+  constructor({ plugins = [], ...options }: TransformerOptions) {
     this.options = options
     this.parser = new OpenAPIParser(options)
-    this.plugins = options.plugins || []
+    this.plugins = plugins
   }
 
   public transform = async () => {
