@@ -54,6 +54,7 @@ const transformApp = async (options: CliOptions) => {
             env = globalEnv,
             base = globalBase,
             extractField = globalExtractField,
+            ...options
           } = item
 
           const plugins: OpenAPIPlugin<OpenAPITransformAppPluginOptions>[] = [
@@ -76,6 +77,7 @@ const transformApp = async (options: CliOptions) => {
           ]
 
           return {
+            ...options,
             url,
             namespace,
             plugins,

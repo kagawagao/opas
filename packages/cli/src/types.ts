@@ -1,12 +1,6 @@
-export interface Config {
-  /**
-   * API JSON 地址
-   */
-  url: string
-  /**
-   * 命名空间
-   */
-  namespace: string
+import { TransformerOptions } from '@opas/core'
+
+export interface Config extends TransformerOptions {
   /**
    * 生成的类型定义文件目录
    */
