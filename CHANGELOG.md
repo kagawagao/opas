@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/kagawagao/opas/compare/v0.4.0...v0.4.1) (2024-04-25)
+
+
+### Bug Fixes
+
+* **cli:** fix postSchema support ([53dca52](https://github.com/kagawagao/opas/commit/53dca52948152e76222e599474c6c8ccd06fb742))
+
+
+
+
+
 # [0.4.0](https://github.com/kagawagao/opas/compare/v0.3.2...v0.4.0) (2024-04-24)
 
 
