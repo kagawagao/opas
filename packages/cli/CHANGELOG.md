@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/kagawagao/opas/compare/v0.4.1...v0.5.0) (2024-04-25)
+
+
+### Features
+
+* support customize request config type annotation ([a6879ac](https://github.com/kagawagao/opas/commit/a6879ac200f313742786fb303efd7e39b5d9e565))
+
+
+
+
+
 ## [0.4.1](https://github.com/kagawagao/opas/compare/v0.4.0...v0.4.1) (2024-04-25)
 
 
