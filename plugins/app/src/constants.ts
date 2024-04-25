@@ -11,3 +11,7 @@ export const DEFAULT_API_AST_TEMPLATE = `
       return SERVICE.request<RESPONSE>(ARGS)
     }
 `
+/**
+ * default api request config type name
+ */
+export const DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME = 'AxiosRequestConfig'

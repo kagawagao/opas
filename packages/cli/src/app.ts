@@ -31,6 +31,7 @@ const transformApp = async (options: CliOptions) => {
       env: globalEnv,
       base: globalBase,
       extractField: globalExtractField,
+      configParamTypeName,
     } = config as OpasConfig
     await OpenAPIRunner.run(
       configs
@@ -73,6 +74,7 @@ const transformApp = async (options: CliOptions) => {
                 return `process.env.${env} + '${extractPath}'`
               },
               extractField,
+              configParamTypeName,
             }),
           ]
 

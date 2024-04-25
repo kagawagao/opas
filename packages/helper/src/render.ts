@@ -117,7 +117,12 @@ function pickParams(parameters: API['parameters']) {
   }
 }
 
-function createParams(parameters: API['parameters'], service: string, operationId: string) {
+function createParams(
+  parameters: API['parameters'],
+  service: string,
+  operationId: string,
+  configTypeName = 'AxiosRequestConfig',
+) {
   const serviceNamespace = pascalCase(service)
   const types = [...new Set(parameters.map((it) => it.type))].sort((a, b) => {
     return SUPPORT_PARAMETERS_TYPES.indexOf(a) - SUPPORT_PARAMETERS_TYPES.indexOf(b)
@@ -125,7 +130,7 @@ function createParams(parameters: API['parameters'], service: string, operationI
 
   const bodyParameters = parameters.filter((it) => it.type === 'body')
   const configParamNode = t.identifier('config')
-  configParamNode.typeAnnotation = t.tsTypeAnnotation(t.tsTypeReference(t.identifier('AxiosRequestConfig')))
+  configParamNode.typeAnnotation = t.tsTypeAnnotation(t.tsTypeReference(t.identifier(configTypeName)))
   configParamNode.optional = true
   return types
     .filter(isSupportParametersType)
@@ -242,7 +247,7 @@ export function createRenderer(templateSource: string, options?: ApiCreateOption
         isV3: options?.openApiVersion === 3,
         extractField: options?.extractField,
       }),
-      PARAMS: createParams(parameters, service, operationId),
+      PARAMS: createParams(parameters, service, operationId, options?.configParamTypeName),
       ARGS: createCalleeArgs(url, method, parameters),
     }
     const neededArgs = templatePlaceholders.reduce<Record<string, unknown>>((acc, cur) => {

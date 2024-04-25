@@ -58,6 +58,11 @@ export interface OpasConfig {
    * @example extractField = 'data'
    */
   extractField?: string
+  /**
+   * 请求参数配置类型名称
+   * @default AxiosRequestConfig
+   */
+  configParamTypeName?: string
 }
 
 export interface CliOptions {

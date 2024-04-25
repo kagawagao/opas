@@ -137,6 +137,11 @@ export interface ApiCreateOptions {
    * @example extractField = 'data'
    */
   extractField?: string | string[]
+  /**
+   * 请求参数配置类型名称
+   * @default AxiosRequestConfig
+   */
+  configParamTypeName?: string
 }
 
 export type WriteFileOptions = {

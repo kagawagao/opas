@@ -11,7 +11,7 @@ import {
 import { kebabCase } from 'lodash'
 import os from 'node:os'
 import path from 'node:path'
-import { DEFAULT_API_AST_TEMPLATE, DEFAULT_SERVICE_DIR } from './constants'
+import { DEFAULT_API_AST_TEMPLATE, DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME, DEFAULT_SERVICE_DIR } from './constants'
 
 export type PluginWriteFileMode =
   | string
@@ -48,13 +48,25 @@ export interface OpenAPITransformAppPluginOptions extends OpenAPIPluginOptions {
         api?: WriteFileMode
         service?: WriteFileMode
       }
+
+  /**
+   * 请求参数配置类型名称
+   * @default AxiosRequestConfig
+   */
+  configParamTypeName?: string
 }
 
 export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITransformAppPluginOptions> {
   public transform = async ({ apis, definition, service, schema }: ParserResult) => {
     const { writeFileMode } = this.options
     const { api: apiMode = 'skip', service: serviceMode = 'warn' } = this.adaptorWriteFileModeArgs(writeFileMode)
-    await this.outputApis(apis, service, apiMode, schema.openApiVersion ?? 2)
+    await this.outputApis(
+      apis,
+      service,
+      apiMode,
+      schema.openApiVersion ?? 2,
+      this.options.configParamTypeName ?? DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME,
+    )
     await this.outputService(service.basePath, service, serviceMode)
     await this.outputDts(service, definition)
   }
@@ -114,12 +126,14 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
     service: ServiceDescriptor,
     writeFileMode: WriteFileMode | string,
     openApiVersion: 2 | 3,
+    configParamTypeName = DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME,
   ) => {
     const { cwd = process.cwd(), apiDir = path.join(cwd, 'src/apis'), extractField } = this.options
     const serviceName = service.name
     const render = createRenderer(DEFAULT_API_AST_TEMPLATE, {
       openApiVersion,
       extractField,
+      configParamTypeName,
     })
     // add service import code
     const importServiceCode = this.createServiceImport(service)
@@ -133,7 +147,7 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
     const outFileName = path.join(apiDir, `${serviceFileName}.ts`)
 
     const content = `
-    import type { AxiosRequestConfig } from 'axios';
+    import type { ${configParamTypeName} } from 'axios';
 
     ${importServiceCode}
     ${apisCode}
