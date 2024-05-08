@@ -47,6 +47,7 @@ export default class OpenAPIParser {
     this.schema = {} as Schema
     this.postSchema = options.postSchema
   }
+
   /**
    * parse open api json schema
    */
@@ -140,12 +141,7 @@ export default class OpenAPIParser {
         if (requestBody) {
           operation.parameters = operation.parameters || []
           const required = '$ref' in requestBody ? true : requestBody.required
-          let schema = undefined
-          if ('content' in requestBody) {
-            schema = Object.values(requestBody.content)[0].schema
-          } else {
-            schema = requestBody
-          }
+          const schema = 'content' in requestBody ? Object.values(requestBody.content)[0].schema : requestBody
           operation.parameters.push({
             name: 'body',
             in: 'body',

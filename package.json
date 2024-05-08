@@ -9,10 +9,10 @@
   "scripts": {
     "test": "lerna run test",
     "postinstall": "husky install",
-    "lint": "eslint . --ext=.ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext=.ts,.tsx --fix",
+    "lint": "eslint . --ext=.ts,.tsx,.js,.jsx --fix",
     "build": "lerna run build",
-    "release": "lerna publish --conventional-commits"
+    "release": "lerna publish --conventional-commits",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,8 @@
     "@babel/cli": "^7.23.4",
     "@babel/preset-env": "^7.23.6",
     "@babel/preset-typescript": "^7.23.3",
+    "@commitlint/cli": "^19.1.0",
+    "@commitlint/config-conventional": "^19.1.0",
     "@opd/eslint-config": "^2.0.1",
     "@opd/prettier-config": "^2.0.0",
     "@types/fs-extra": "^11.0.4",
@@ -48,5 +50,13 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "prettier": "@opd/prettier-config"
+  "prettier": "@opd/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{json,md}": [
+      "prettier -c --write"
+    ]
+  }
 }

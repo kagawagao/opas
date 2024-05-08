@@ -102,7 +102,7 @@ function createResponse(options: CreateResponseOptions) {
 }
 
 function addComments(node: any, comment: string[]) {
-  const value = comment.map((str, index) => `*\n* ${str}`).join('\n') + '\n'
+  const value = comment.map((str) => `*\n* ${str}`).join('\n') + '\n'
   return t.addComments(node, 'leading', [
     {
       type: 'CommentBlock',
