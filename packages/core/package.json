@@ -9,7 +9,7 @@
     "index.d.ts"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "prebuild": "tsc --build --clean",
     "build": "npm run build:tsc",
     "build:tsc": "tsc --build",
