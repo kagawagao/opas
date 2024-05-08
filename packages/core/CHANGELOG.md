@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/kagawagao/opas/compare/v0.5.0...v0.6.0) (2024-05-08)
+
+
+### Features
+
+* **core:** support runner configuration in object ([f8c7e4a](https://github.com/kagawagao/opas/commit/f8c7e4a678e743882b486a3c41aa3faf5e550305))
+
+
+
+
+
 # [0.5.0](https://github.com/kagawagao/opas/compare/v0.4.1...v0.5.0) (2024-04-25)
 
 **Note:** Version bump only for package @opas/core
