@@ -23,6 +23,7 @@ export default class OpenAPITransformSDKPlugin extends OpenAPIPlugin<OpenAPITran
       source: definition,
       filePath: definitionFilePath,
     })
+    await fs.ensureDir(outputDir)
     await fs.writeFile(definitionFilePath, formattedContent, {
       encoding: 'utf8',
     })

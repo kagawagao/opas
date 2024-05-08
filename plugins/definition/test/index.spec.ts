@@ -5,17 +5,19 @@ import OpenAPITransformDefinitionPlugin from '../src'
 
 describe('doc', () => {
   it('should generate definition', async () => {
-    await OpenAPIRunner.run([
-      {
-        url: path.resolve(__dirname, '../../../openapi_v3.json'),
-        namespace: 'pets-store',
-        plugins: [
-          new OpenAPITransformDefinitionPlugin({
-            outputDir: path.resolve(__dirname, './fixtures'),
-          }),
-        ],
-      },
-    ])
+    await OpenAPIRunner.run({
+      namespaces: [
+        {
+          url: path.resolve(__dirname, '../../../openapi_v3.json'),
+          namespace: 'pets-store',
+        },
+      ],
+      plugins: [
+        new OpenAPITransformDefinitionPlugin({
+          outputDir: path.resolve(__dirname, './fixtures'),
+        }),
+      ],
+    })
     const fileContent = await fs.readFile(path.resolve(__dirname, './fixtures/pets-store.d.ts'), 'utf-8')
     expect(fileContent.trim()).not.toEqual('')
   })
