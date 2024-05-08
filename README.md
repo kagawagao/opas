@@ -28,7 +28,7 @@ Open API toolkit for TS/JS
 | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
 | [`@opas/plugin-app`](./plugins/app)               | [![NPM Version](https://img.shields.io/npm/v/%40opas%2Fplugin-app)](https://www.npmjs.com/package/@opas/plugin-app)               | Plugin for generating API client      |
 | [`@opas/plugin-sdk`](./plugins/sdk)               | [![NPM Version](https://img.shields.io/npm/v/%40opas%2Fplugin-sdk)](https://www.npmjs.com/package/@opas/plugin-sdk)               | Plugin for generating API SDK         |
-| `@opas/plugin-doc`](./plugins/doc)                | [![NPM Version](https://img.shields.io/npm/v/%40opas%2Fplugin-doc)](https://www.npmjs.com/package/@opas/plugin-doc)               | Plugin for generating API docs        |
+| [`@opas/plugin-doc`](./plugins/doc)               | [![NPM Version](https://img.shields.io/npm/v/%40opas%2Fplugin-doc)](https://www.npmjs.com/package/@opas/plugin-doc)               | Plugin for generating API docs        |
 | [`@opas/plugin-definition`](./plugins/definition) | [![NPM Version](https://img.shields.io/npm/v/%40opas%2Fplugin-definition)](https://www.npmjs.com/package/@opas/plugin-definition) | Plugin for generating API definitions |
 
 ## Usage
