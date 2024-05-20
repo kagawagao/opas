@@ -2,6 +2,7 @@ import generate from '@babel/generator'
 import template from '@babel/template'
 import * as t from '@babel/types'
 import camelcase from 'camelcase'
+import { Schema } from 'dtsgenerator'
 import { OpenApisV3 } from 'dtsgenerator/dist/core/openApiV3'
 import { pascalCase } from './case'
 import { SUPPORT_PARAMETERS_TYPES } from './constants'
@@ -55,6 +56,13 @@ function formatResponse(response: Response) {
         const type = items.$ref.split('/').pop() || ''
         return formatTypeName(type) + '[]'
       } else if (items?.type) {
+        if (items?.type && /^[a-z]/.test(items?.type)) {
+          if (items?.type === 'object') {
+            return 'Record<string, any>[]'
+          }
+          // other basic value type
+          return items.type + '[]'
+        }
         return formatTypeName(items.type) + '[]'
       }
     }
@@ -73,7 +81,7 @@ function replaceParams(url: string, locator: string) {
 }
 
 function createResponse(options: CreateResponseOptions) {
-  const { response, service, isV3 = false, extractField } = options
+  const { response, service, isV3 = false, extractField, raw, schema } = options
   const serviceNamespace = pascalCase(service)
   if (response) {
     if (response && /^[a-z]/.test(response)) {
@@ -86,14 +94,24 @@ function createResponse(options: CreateResponseOptions) {
       return t.identifier('void')
     } else if (extractField) {
       // need extract field
-      const fields = Array.isArray(extractField) ? extractField : [extractField]
-      const identifier = fields.reduce(
-        (prev, cur) => {
-          return `Required<${prev}>['${cur}']`
-        },
-        `${serviceNamespace}${isV3 ? '.Schemas' : ''}.${response}`,
-      )
-      return t.identifier(identifier)
+      if (schema && raw) {
+        // if extract field not exist in response, remove it
+        if (raw.schema?.$ref) {
+          const fields = recursiveRemoveFieldFromSchema(
+            Array.isArray(extractField) ? extractField : [extractField],
+            raw.schema.$ref,
+            schema,
+            0,
+          )
+          const identifier = fields.reduce(
+            (prev, cur) => {
+              return `Required<${prev}>['${cur}']`
+            },
+            `${serviceNamespace}${isV3 ? '.Schemas' : ''}.${response}`,
+          )
+          return t.identifier(identifier)
+        }
+      }
     }
     return t.identifier(`${serviceNamespace}${isV3 ? '.Schemas' : ''}.${response}`)
   } else {
@@ -218,6 +236,7 @@ function createItem(api: ParsedOperation, options: ApiCreateOptions = {}): API {
     operationId = '',
   } = api
   const { urlFormatter = (url) => url, nameFormatter = formatApiName } = options
+  const rawResponse = (responses[200] ?? responses.default) as unknown as Response
   const temp: API = {
     method: method.toString(),
     url: urlFormatter(rawUri),
@@ -226,6 +245,7 @@ function createItem(api: ParsedOperation, options: ApiCreateOptions = {}): API {
     parameters: formatParameters(parameters),
     response: formatResponse((responses[200] ?? responses.default) as unknown as Response),
     operationId: formatOperationId(operationId),
+    rawResponse,
   }
   return temp
 }
@@ -236,7 +256,16 @@ export function createRenderer(templateSource: string, options?: ApiCreateOption
   })
   const templatePlaceholders = getTemplateParams(templateSource)
   return (api: ParsedOperation, service: string) => {
-    const { name, method, url, summary, parameters = [], operationId = '', response } = createItem(api, options)
+    const {
+      name,
+      method,
+      url,
+      summary,
+      parameters = [],
+      operationId = '',
+      response,
+      rawResponse,
+    } = createItem(api, options)
     const allArgs: Record<string, any> = {
       NAME: name,
       SERVICE: formatService(service),
@@ -246,6 +275,8 @@ export function createRenderer(templateSource: string, options?: ApiCreateOption
         service,
         isV3: options?.openApiVersion === 3,
         extractField: options?.extractField,
+        schema: options?.schema,
+        raw: rawResponse,
       }),
       PARAMS: createParams(parameters, service, operationId, options?.configParamTypeName),
       ARGS: createCalleeArgs(url, method, parameters),
@@ -268,4 +299,27 @@ export function createRenderer(templateSource: string, options?: ApiCreateOption
     const { code } = generate(withCommentsNode)
     return code
   }
+}
+
+export function recursiveRemoveFieldFromSchema(fields: string[], refStr: string, schema: Schema, index = 0) {
+  const ref = refStr.split('/')
+  const field = fields[index]
+  const definitionName = ref.pop() as string
+  if (typeof schema.content === 'object') {
+    const definitions = schema.content.definitions ?? {}
+    const responseSchema = definitions[definitionName]
+    if (responseSchema && typeof responseSchema === 'object') {
+      const { properties } = responseSchema
+      if (properties) {
+        const property = properties[field]
+        if (!property) {
+          // if field not exist, remove all fields
+          return fields.filter((_, i) => i < index)
+        } else if (typeof property === 'object' && property.$ref) {
+          return recursiveRemoveFieldFromSchema(fields, property.$ref.split('/').pop() as string, schema, index + 1)
+        }
+      }
+    }
+  }
+  return [...fields]
 }

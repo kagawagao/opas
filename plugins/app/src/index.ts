@@ -8,6 +8,7 @@ import {
   formatService,
   outFile,
 } from '@opas/helper'
+import { Schema } from 'dtsgenerator'
 import { kebabCase } from 'lodash'
 import os from 'node:os'
 import path from 'node:path'
@@ -60,13 +61,14 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
   public transform = async ({ apis, definition, service, schema }: ParserResult) => {
     const { writeFileMode } = this.options
     const { api: apiMode = 'skip', service: serviceMode = 'warn' } = this.adaptorWriteFileModeArgs(writeFileMode)
-    await this.outputApis(
+    await this.outputApis({
       apis,
       service,
-      apiMode,
-      schema.openApiVersion ?? 2,
-      this.options.configParamTypeName ?? DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME,
-    )
+      writeFileMode: apiMode,
+      openApiVersion: schema.openApiVersion ?? 2,
+      configParamTypeName: this.options.configParamTypeName ?? DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME,
+      schema,
+    })
     await this.outputService(service.basePath, service, serviceMode)
     await this.outputDts(service, definition)
   }
@@ -121,19 +123,28 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
     })
   }
 
-  private outputApis = async (
-    apis: ParsedOperation[],
-    service: ServiceDescriptor,
-    writeFileMode: WriteFileMode | string,
-    openApiVersion: 2 | 3,
+  private outputApis = async ({
+    apis,
+    service,
+    writeFileMode,
+    openApiVersion,
     configParamTypeName = DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME,
-  ) => {
+    schema,
+  }: {
+    apis: ParsedOperation[]
+    service: ServiceDescriptor
+    writeFileMode: WriteFileMode | string
+    openApiVersion: 2 | 3
+    configParamTypeName: string
+    schema: Schema
+  }) => {
     const { cwd = process.cwd(), apiDir = path.join(cwd, 'src/apis'), extractField } = this.options
     const serviceName = service.name
     const render = createRenderer(DEFAULT_API_AST_TEMPLATE, {
       openApiVersion,
       extractField,
       configParamTypeName,
+      schema,
     })
     // add service import code
     const importServiceCode = this.createServiceImport(service)

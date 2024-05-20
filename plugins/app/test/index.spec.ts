@@ -3,8 +3,8 @@ import fs from 'fs-extra'
 import path from 'node:path'
 import OpenAPITransformAppPlugin from '../src'
 
-describe('doc', () => {
-  it('should generate sdk with openapi v2', async () => {
+describe('app', () => {
+  it('should generate app client with openapi v2', async () => {
     await OpenAPIRunner.run([
       {
         url: path.resolve(__dirname, '../../../openapi_v2.json'),
@@ -24,7 +24,7 @@ describe('doc', () => {
     expect(serviceFileContent.trim()).not.toEqual('')
   })
 
-  it('should generate sdk with openapi v3', async () => {
+  it('should generate app client with openapi v3', async () => {
     await OpenAPIRunner.run([
       {
         url: path.resolve(__dirname, '../../../openapi_v3.json'),

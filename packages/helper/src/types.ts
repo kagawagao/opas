@@ -1,3 +1,4 @@
+import { Schema } from 'dtsgenerator'
 import { OpenApisV2 } from 'dtsgenerator/dist/core/openApiV2'
 import { OpenApisV3 } from 'dtsgenerator/dist/core/openApiV3'
 
@@ -42,6 +43,10 @@ export interface API {
    * api response
    */
   response?: string
+  /**
+   * raw api response
+   */
+  rawResponse?: Response
   /**
    * api method
    */
@@ -142,6 +147,7 @@ export interface ApiCreateOptions {
    * @default AxiosRequestConfig
    */
   configParamTypeName?: string
+  schema?: Schema
 }
 
 export type WriteFileOptions = {
@@ -163,6 +169,8 @@ export interface CreateResponseOptions {
   service: string
   isV3: boolean
   extractField?: string | string[]
+  schema?: Schema
+  raw?: Response
 }
 
 export type OpenAPISchemaJSON = OpenApisV2.SchemaJson | OpenApisV3.SchemaJson
