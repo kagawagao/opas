@@ -1,15 +1,8 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "0.6.0",
-  "packages": [
-    "packages/*",
-    "plugins/*"
-  ],
-  "ignoreChanges": [
-    "**/test/**",
-    "**/*.md",
-    "**/package-lock.json"
-  ],
+  "version": "0.6.1",
+  "packages": ["packages/*", "plugins/*"],
+  "ignoreChanges": ["**/test/**", "**/*.md", "**/package-lock.json"],
   "command": {
     "version": {
       "conventionalCommits": true,

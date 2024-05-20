@@ -3,123 +3,74 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/kagawagao/opas/compare/v0.6.0...v0.6.1) (2024-05-20)
+
+### Bug Fixes
+
+- check field exist before extract ([1307444](https://github.com/kagawagao/opas/commit/1307444cff572f818dc02b4f4bca638c3538eac3))
+
 # [0.6.0](https://github.com/kagawagao/opas/compare/v0.5.0...v0.6.0) (2024-05-08)
 
 **Note:** Version bump only for package @opas/helper
 
-
-
-
-
 # [0.5.0](https://github.com/kagawagao/opas/compare/v0.4.1...v0.5.0) (2024-04-25)
-
 
 ### Features
 
-* support customize request config type annotation ([a6879ac](https://github.com/kagawagao/opas/commit/a6879ac200f313742786fb303efd7e39b5d9e565))
-
-
-
-
+- support customize request config type annotation ([a6879ac](https://github.com/kagawagao/opas/commit/a6879ac200f313742786fb303efd7e39b5d9e565))
 
 # [0.4.0](https://github.com/kagawagao/opas/compare/v0.3.2...v0.4.0) (2024-04-24)
 
 **Note:** Version bump only for package @opas/helper
 
-
-
-
-
 # [0.3.0](https://github.com/kagawagao/opas/compare/v0.2.0...v0.3.0) (2024-01-30)
 
 **Note:** Version bump only for package @opas/helper
 
-
-
-
-
 # [0.2.0](https://github.com/kagawagao/opas/compare/v0.1.1...v0.2.0) (2024-01-30)
-
 
 ### Features
 
-* 支持 api tags ([b216647](https://github.com/kagawagao/opas/commit/b2166470d9fd18bf84eafc92ed1529f03c0448c8))
-
-
-
-
+- 支持 api tags ([b216647](https://github.com/kagawagao/opas/commit/b2166470d9fd18bf84eafc92ed1529f03c0448c8))
 
 ## [0.1.1](https://github.com/kagawagao/opas/compare/v0.1.0...v0.1.1) (2023-12-31)
 
-
 ### Bug Fixes
 
-* fix quote ([467d0f2](https://github.com/kagawagao/opas/commit/467d0f282846e43d5a881bc1f571adef894df0d5))
-
-
-
-
+- fix quote ([467d0f2](https://github.com/kagawagao/opas/commit/467d0f282846e43d5a881bc1f571adef894df0d5))
 
 # [0.1.0](https://github.com/kagawagao/opas/compare/v0.0.7...v0.1.0) (2023-12-31)
 
-
 ### Features
 
-* support nested extract fields ([497e37d](https://github.com/kagawagao/opas/commit/497e37def83631246f02bce5b2b39d072d771ab6))
-
-
-
-
+- support nested extract fields ([497e37d](https://github.com/kagawagao/opas/commit/497e37def83631246f02bce5b2b39d072d771ab6))
 
 ## [0.0.7](https://github.com/kagawagao/opas/compare/v0.0.6...v0.0.7) (2023-12-26)
 
-
 ### Bug Fixes
 
-* fix write file mode ([0eca4aa](https://github.com/kagawagao/opas/commit/0eca4aa2d4045546c4493223b40cc7a6bc2ae7f1))
-
-
-
-
+- fix write file mode ([0eca4aa](https://github.com/kagawagao/opas/commit/0eca4aa2d4045546c4493223b40cc7a6bc2ae7f1))
 
 ## [0.0.6](https://github.com/kagawagao/opas/compare/v0.0.5...v0.0.6) (2023-12-26)
 
 **Note:** Version bump only for package @opas/helper
 
-
-
-
-
 ## [0.0.5](https://github.com/kagawagao/opas/compare/v0.0.4...v0.0.5) (2023-12-26)
 
 **Note:** Version bump only for package @opas/helper
-
-
-
-
 
 ## [0.0.4](https://github.com/kagawagao/opas/compare/v0.0.3...v0.0.4) (2023-12-26)
 
 **Note:** Version bump only for package @opas/helper
 
-
-
-
-
 ## [0.0.3](https://github.com/kagawagao/opas/compare/v0.0.2...v0.0.3) (2023-12-25)
-
 
 ### Bug Fixes
 
-* fix publish config ([f5dbf88](https://github.com/kagawagao/opas/commit/f5dbf88593ff09fc9c07837985d7d248b6235d63))
-
-
-
-
+- fix publish config ([f5dbf88](https://github.com/kagawagao/opas/commit/f5dbf88593ff09fc9c07837985d7d248b6235d63))
 
 ## [0.0.2](https://github.com/kagawagao/opas/compare/v0.0.1...v0.0.2) (2023-12-25)
 
-
 ### Bug Fixes
 
-* add missed pkg ([80534ff](https://github.com/kagawagao/opas/commit/80534ff2b9895545257ee7260fca515c5ca44b43))
+- add missed pkg ([80534ff](https://github.com/kagawagao/opas/commit/80534ff2b9895545257ee7260fca515c5ca44b43))
