@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.2](https://github.com/kagawagao/opas/compare/v0.6.1...v0.6.2) (2024-05-22)
+
+### Bug Fixes
+
+- **plugins:app:** fix url join ([403c022](https://github.com/kagawagao/opas/commit/403c022c9073997b1a8274b9625959abf477caeb))
+
 ## [0.6.1](https://github.com/kagawagao/opas/compare/v0.6.0...v0.6.1) (2024-05-20)
 
 ### Bug Fixes
