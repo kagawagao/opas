@@ -94,13 +94,21 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
     })
   }
 
+  private joinUrl = (pre: string = '', next: string = '') => {
+    if (next.startsWith('http')) {
+      return next
+    } else {
+      return pre.replace(/\/$/, '') + '/' + next.replace(/^\//, '')
+    }
+  }
+
   private outputService = async (basePath = '', service: ServiceDescriptor, writeFileMode: WriteFileMode | string) => {
     const { cwd = process.cwd(), serviceDir = path.join(cwd, 'src/services'), extractPath = '', baseUrl } = this.options
     const serviceName = service.name
-    const mergedPath = basePath + extractPath
+    const mergedPath = this.joinUrl(basePath, extractPath)
     const code = `import Service from '../utils/service'
  const ${serviceName}Service = new Service({
-   baseURL: ${typeof baseUrl === 'function' ? baseUrl(mergedPath) : `'${baseUrl + mergedPath}'`},
+   baseURL: ${typeof baseUrl === 'function' ? baseUrl(mergedPath) : `'${this.joinUrl(baseUrl, mergedPath)}'`},
    headers: {},
  })
  export default ${formatService(serviceName)}`
