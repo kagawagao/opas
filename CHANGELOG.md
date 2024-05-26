@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.3](https://github.com/kagawagao/opas/compare/v0.6.2...v0.6.3) (2024-05-26)
+
+### Bug Fixes
+
+- **helper:** fix v3 response extract field render ([66a88b0](https://github.com/kagawagao/opas/commit/66a88b04c57c76ac07577ff5522e1ed97d1e5d6a))
+
 ## [0.6.2](https://github.com/kagawagao/opas/compare/v0.6.1...v0.6.2) (2024-05-22)
 
 ### Bug Fixes

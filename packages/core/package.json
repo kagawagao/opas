@@ -1,6 +1,6 @@
 {
   "name": "@opas/core",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "description": "core of OpenAPIToolkit",
   "main": "lib/index.js",
   "types": "lib",
@@ -35,7 +35,7 @@
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
     "@dtsgenerator/replace-namespace": "^1.6.0",
-    "@opas/helper": "^0.6.1",
+    "@opas/helper": "^0.6.3",
     "dtsgenerator": "^3.19.1",
     "lodash": "^4.17.21"
   }
