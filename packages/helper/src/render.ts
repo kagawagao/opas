@@ -95,11 +95,14 @@ function createResponse(options: CreateResponseOptions) {
     } else if (extractField) {
       // need extract field
       if (schema && raw) {
+        const responseContent = (raw as OpenApisV3.SchemaJson.Definitions.Response)?.content
+        const jsonResponse = responseContent?.['application/json'] ?? responseContent?.['*/*']
+        const ref = raw?.schema?.$ref || jsonResponse?.schema?.$ref
         // if extract field not exist in response, remove it
-        if (raw.schema?.$ref) {
+        if (ref) {
           const fields = recursiveRemoveFieldFromSchema(
             Array.isArray(extractField) ? extractField : [extractField],
-            raw.schema.$ref,
+            ref,
             schema,
             0,
           )
@@ -306,7 +309,7 @@ export function recursiveRemoveFieldFromSchema(fields: string[], refStr: string,
   const field = fields[index]
   const definitionName = ref.pop() as string
   if (typeof schema.content === 'object') {
-    const definitions = schema.content.definitions ?? {}
+    const definitions = schema.content.definitions ?? (schema.content as any).components?.schemas ?? {}
     const responseSchema = definitions[definitionName]
     if (responseSchema && typeof responseSchema === 'object') {
       const { properties } = responseSchema
