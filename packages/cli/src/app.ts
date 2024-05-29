@@ -68,10 +68,18 @@ const transformApp = async (options: CliOptions) => {
                 service: WriteFileMode.warn,
               },
               baseUrl: (extractPath = '') => {
-                if (base) {
+                if (extractPath.startsWith('http')) {
+                  // absolute path
+                  return extractPath
+                } else if (base) {
+                  // relative path
                   return `'${base}' + '${extractPath}'`
+                } else if (env) {
+                  // env path
+                  return `${env} + '${extractPath}'`
                 }
-                return `process.env.${env} + '${extractPath}'`
+                // default path
+                return `'${extractPath}'`
               },
               extractField,
               configParamTypeName,
