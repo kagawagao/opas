@@ -1,6 +1,6 @@
 {
   "name": "@opas/cli",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "command line tools which bundle opas",
   "author": "kagawagao <kingsongao1221@gmail.com>",
   "homepage": "",
