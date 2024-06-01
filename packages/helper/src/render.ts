@@ -90,6 +90,8 @@ function createResponse(options: CreateResponseOptions) {
       }
       // other basic value type
       return t.identifier(response)
+    } else if (response.startsWith('Record<string, any>')) {
+      return t.identifier(response)
     } else if (response.endsWith('Void')) {
       return t.identifier('void')
     } else if (extractField) {
