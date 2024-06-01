@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.5](https://github.com/kagawagao/opas/compare/v0.6.4...v0.6.5) (2024-06-01)
+
+**Note:** Version bump only for package @opas/plugin-doc
+
 ## [0.6.3](https://github.com/kagawagao/opas/compare/v0.6.2...v0.6.3) (2024-05-26)
 
 **Note:** Version bump only for package @opas/plugin-doc
