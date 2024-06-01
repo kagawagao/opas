@@ -70,7 +70,7 @@ const transformApp = async (options: CliOptions) => {
               baseUrl: (extractPath = '') => {
                 if (extractPath.startsWith('http')) {
                   // absolute path
-                  return extractPath
+                  return `'${extractPath}'`
                 } else if (base) {
                   // relative path
                   return `'${base}' + '${extractPath}'`
