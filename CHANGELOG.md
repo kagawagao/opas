@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.6](https://github.com/kagawagao/opas/compare/v0.6.5...v0.6.6) (2024-06-01)
+
+### Bug Fixes
+
+- fix base url generate ([29fa151](https://github.com/kagawagao/opas/commit/29fa151219f7262e1c3e0c53b083537330210022))
+
 ## [0.6.5](https://github.com/kagawagao/opas/compare/v0.6.4...v0.6.5) (2024-06-01)
 
 ### Bug Fixes
