@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import inquirer from 'inquirer'
 import path from 'node:path'
-import { logger } from './utils'
+import { configExplore, logger } from './utils'
 
 const templatePath = path.resolve(__dirname, '../templates')
 
@@ -20,7 +20,7 @@ interface UserAnswer {
   useTypeScript: boolean
 }
 
-const initConfig = async () => {
+async function generateConfigFile() {
   try {
     const { useTypeScript } = await inquirer.prompt<UserAnswer>([
       {
@@ -38,6 +38,30 @@ const initConfig = async () => {
   } catch (error) {
     logger.error(error)
     process.exit(1)
+  }
+}
+
+const initConfig = async () => {
+  // check if the file already exists
+  const searchResult = await configExplore.search(process.cwd())
+  if (searchResult?.filepath) {
+    const { overwrite } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'overwrite',
+        message: 'Config file already exists. Do you want to overwrite it?',
+        default: false,
+      },
+    ])
+    if (overwrite) {
+      // remove exist file
+      await fs.unlink(searchResult.filepath)
+      await generateConfigFile()
+    } else {
+      logger.info('Exiting...')
+    }
+  } else {
+    await generateConfigFile()
   }
 }
 
