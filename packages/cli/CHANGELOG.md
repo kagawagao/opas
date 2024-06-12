@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/kagawagao/opas/compare/v0.7.0...v0.8.0) (2024-06-12)
+
+### Features
+
+- **cli:** check file exist firstly and support overwrite ([eb1d125](https://github.com/kagawagao/opas/commit/eb1d125bc3199b48ae5a3732b6bc082bf84f3bfe))
+
 # [0.7.0](https://github.com/kagawagao/opas/compare/v0.6.6...v0.7.0) (2024-06-12)
 
 ### Features
