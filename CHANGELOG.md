@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/kagawagao/opas/compare/v0.6.6...v0.7.0) (2024-06-12)
+
+### Features
+
+- **cli:** implement init command ([a4f839e](https://github.com/kagawagao/opas/commit/a4f839eca3dfbf5e2ed6a193c0f8096d27232de2))
+
 ## [0.6.6](https://github.com/kagawagao/opas/compare/v0.6.5...v0.6.6) (2024-06-01)
 
 ### Bug Fixes
