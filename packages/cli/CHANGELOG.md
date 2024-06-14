@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/kagawagao/opas/compare/v0.8.0...v0.8.1) (2024-06-14)
+
+### Bug Fixes
+
+- **cli:** fix config type definition ([f8ac0e7](https://github.com/kagawagao/opas/commit/f8ac0e7dfc283c131230307517cfe33d89f01610))
+
 # [0.8.0](https://github.com/kagawagao/opas/compare/v0.7.0...v0.8.0) (2024-06-12)
 
 ### Features
