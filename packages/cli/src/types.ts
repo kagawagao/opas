@@ -1,6 +1,7 @@
 import { TransformerOptions } from '@opas/core'
+import { OpenAPITransformAppPluginOptions } from '@opas/plugin-app'
 
-export interface Config extends TransformerOptions {
+export interface Config extends TransformerOptions, Pick<OpenAPITransformAppPluginOptions, 'extractField'> {
   /**
    * 生成的类型定义文件目录
    */
@@ -21,11 +22,6 @@ export interface Config extends TransformerOptions {
    * 基础路径
    */
   base?: string
-  /**
-   * 类型提取中进一步提取的字段
-   * @example extractField = 'data'
-   */
-  extractField?: string
 }
 
 export interface OpasConfig {
