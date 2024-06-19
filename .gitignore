@@ -137,3 +137,7 @@ plugins/**/lib
 plugins/**/bin
 plugins/**/index.d.ts
 fixtures
+
+# editor
+.vscode
+.idea

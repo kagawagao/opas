@@ -18,8 +18,7 @@ program
     isDefault: true,
   })
   .description('generate api client code from open api spec')
-  .option('-c, --config <config path>', 'oasis config path')
+  .option('-c, --config <config path>', 'opas config path')
   .option('-n, --namespace <namespace...>', 'namespace to generate')
   .action(transformApp)
-
-program.parse(process.argv)
+  .parse(process.argv)
