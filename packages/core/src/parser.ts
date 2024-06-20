@@ -33,6 +33,7 @@ export interface ParserResult extends Record<string, any> {
   definition: string
   apis: ParsedOperation[]
   service: ServiceDescriptor
+  tags: string[]
 }
 
 export default class OpenAPIParser {
@@ -60,8 +61,8 @@ export default class OpenAPIParser {
       this.parseService(),
     ])
 
+    const tags: string[] = []
     if (!(schema.content as OpenAPISchemaJSON).tags) {
-      const tags: string[] = []
       apis.forEach((api) => {
         tags.push(...(api.tags || []))
       })
@@ -79,6 +80,7 @@ export default class OpenAPIParser {
       definition,
       apis,
       service,
+      tags,
     }
   }
 
@@ -160,7 +162,8 @@ export default class OpenAPIParser {
         })
       }
     }
-    return apis
+    // sort apis by uri
+    return apis.sort((a, b) => a.rawUri.localeCompare(b.rawUri))
   }
 
   /**
