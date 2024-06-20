@@ -1,3 +1,6 @@
+import generate from '@babel/generator'
+import template from '@babel/template'
+import { Statement } from '@babel/types'
 import { OpenAPIPlugin, OpenAPIPluginOptions, ParserResult } from '@opas/core'
 import {
   ParsedOperation,
@@ -9,10 +12,11 @@ import {
   outFile,
 } from '@opas/helper'
 import { Schema } from 'dtsgenerator'
+import fs from 'fs-extra'
 import { kebabCase } from 'lodash'
 import os from 'node:os'
 import path from 'node:path'
-import { DEFAULT_API_AST_TEMPLATE, DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME, DEFAULT_SERVICE_DIR } from './constants'
+import { DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME, DEFAULT_SERVICE_DIR } from './constants'
 
 export type PluginWriteFileMode =
   | string
@@ -23,24 +27,22 @@ export type PluginWriteFileMode =
     }
 
 export interface OpenAPITransformAppPluginOptions extends OpenAPIPluginOptions {
-  // api 输出目录
+  // api output dir
   apiDir?: string
-  // service 输出目录
+  // service output dir
   serviceDir?: string
-  // dts 输出目录
+  // dts output dir
   dtsDir?: string
-  // extractPath 用于提取 url 中的公共前缀
+  // extractPath for api and service
   extractPath?: string
   /**
-   * 类型提取中进一步提取的字段
+   * extract field from response data
    * @example extractField = 'data'
    */
   extractField?: string | string[]
   baseUrl?: string | ((extractPath?: string) => void)
   /**
-   * 值为WriteMode ，则 api 和 service都用这个类型.
-   * 值为WriteFileOptions，则 api 和 service单独设置.
-   *
+   * write file mode
    * @default 'warn'
    */
   writeFileMode?:
@@ -49,12 +51,15 @@ export interface OpenAPITransformAppPluginOptions extends OpenAPIPluginOptions {
         api?: WriteFileMode
         service?: WriteFileMode
       }
-
   /**
-   * 请求参数配置类型名称
+   * config param type name
    * @default AxiosRequestConfig
    */
   configParamTypeName?: string
+  /**
+   * service import path
+   */
+  serviceImportPath?: string
 }
 
 export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITransformAppPluginOptions> {
@@ -103,15 +108,29 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
   }
 
   private outputService = async (basePath = '', service: ServiceDescriptor, writeFileMode: WriteFileMode | string) => {
-    const { cwd = process.cwd(), serviceDir = path.join(cwd, 'src/services'), extractPath = '', baseUrl } = this.options
+    const {
+      cwd = process.cwd(),
+      serviceDir = path.join(cwd, 'src/services'),
+      extractPath = '',
+      baseUrl,
+      serviceImportPath = '../utils/service',
+    } = this.options
     const serviceName = service.name
     const mergedPath = this.joinUrl(basePath, extractPath)
-    const code = `import Service from '../utils/service'
- const ${serviceName}Service = new Service({
-   baseURL: ${typeof baseUrl === 'function' ? baseUrl(mergedPath) : `'${this.joinUrl(baseUrl, mergedPath)}'`},
-   headers: {},
- })
- export default ${formatService(serviceName)}`
+    const templateSource = await fs.readFile(path.join(__dirname, '../templates/service.tpl'), {
+      encoding: 'utf-8',
+    })
+
+    const templateAst = template(templateSource, {
+      plugins: ['typescript'],
+    })
+    const statements = templateAst({
+      SERVICE_NAME: `${serviceName}Service`,
+      BASE_URL: typeof baseUrl === 'function' ? baseUrl(mergedPath) : `'${this.joinUrl(baseUrl, mergedPath)}'`,
+      SERVICE_PATH: serviceImportPath,
+    }) as Statement[]
+
+    const code = statements.map((statement) => generate(statement).code).join('\n')
     const outFileName = serviceDir + `/${kebabCase(serviceName)}.ts`
     const formattedContent = await formatCode({
       source: code,
@@ -148,7 +167,10 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
   }) => {
     const { cwd = process.cwd(), apiDir = path.join(cwd, 'src/apis'), extractField } = this.options
     const serviceName = service.name
-    const render = createRenderer(DEFAULT_API_AST_TEMPLATE, {
+    const apiAstTemplate = await fs.readFile(path.join(__dirname, '../templates/api.tpl'), {
+      encoding: 'utf-8',
+    })
+    const render = createRenderer(apiAstTemplate, {
       openApiVersion,
       extractField,
       configParamTypeName,
