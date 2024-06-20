@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.1](https://github.com/kagawagao/opas/compare/v0.9.0...v0.9.1) (2024-06-20)
+
+### Bug Fixes
+
+- **cli:** fix cli require deps version ([2356fcc](https://github.com/kagawagao/opas/commit/2356fccfc7ccb1cc7cd7d6eef0ebc6ea054e8efe))
+
 # [0.9.0](https://github.com/kagawagao/opas/compare/v0.8.1...v0.9.0) (2024-06-20)
 
 ### Features
