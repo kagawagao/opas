@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/kagawagao/opas/compare/v0.8.1...v0.9.0) (2024-06-20)
+
+### Features
+
+- **core:** sort api default ([e1e1634](https://github.com/kagawagao/opas/commit/e1e16342dc2e404d179d52583aa3687e0e745a92))
+- **plugins:app:** add custom service import path support ([e906a4f](https://github.com/kagawagao/opas/commit/e906a4f4fc3cff2ca499404f5f32c6c0e2d1adeb))
+
 ## [0.8.1](https://github.com/kagawagao/opas/compare/v0.8.0...v0.8.1) (2024-06-14)
 
 ### Bug Fixes
