@@ -31,7 +31,7 @@
     "chalk": "4.1.2",
     "commander": "^12.0.0",
     "cosmiconfig": "^9.0.0",
-    "inquirer": "9.2.23",
+    "inquirer": "9.3.2",
     "signale": "^1.4.0"
   },
   "publishConfig": {
