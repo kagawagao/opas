@@ -5,13 +5,74 @@ import json2md from 'json2md'
 import { kebabCase } from 'lodash'
 import path from 'node:path'
 
+const defaultSymbols = {
+  method: '请求方法',
+  uri: '请求地址',
+  parameters: '请求参数',
+  responses: '返回值',
+  name: '参数名称',
+  type: '参数类型',
+  required: '是否必填',
+  description: '参数描述',
+  headerParameters: '请求头设置',
+  pathParameters: '路径参数',
+  bodyParameters: '请求体参数',
+  queryParameters: '查询参数',
+} as const
+
 export type Field = Required<SchemaJsonV2>['definitions'][''] & {
   type?: any
   name?: string
 }
 
-function formatQuoteString(str: string) {
+function formatQuoteString(str: string | string[]) {
   return `\`${str}\``
+}
+
+function formatSchemaType(schema: any) {
+  const refs: string[] = []
+  let type = '-'
+  if (schema.type === 'array') {
+    type = schema.type
+    if (schema.items) {
+      if (Array.isArray(schema.items)) {
+        type = schema.items
+          .map((item: any) => {
+            if (item.$ref) {
+              return `${schema.type}<${item.$ref.split('/').pop()}>`
+            } else if (item.type) {
+              return `${schema.type}<${item.type}>`
+            }
+            return '-'
+          })
+          .join('|')
+      } else {
+        if (schema.items.$ref) {
+          type = `${schema.type}<${schema.items.$ref.split('/').pop()}>`
+          refs.push(schema.items.$ref)
+        } else if (schema.items.type) {
+          type = `${schema.type}<${schema.items.type}>`
+        }
+      }
+    }
+  } else {
+    type = Array.isArray(schema.type) ? schema.type.join('|') : schema.type ?? '-'
+  }
+
+  return { type, refs }
+}
+
+function formatParameterType(parameter: ParameterV2) {
+  if ('type' in parameter) {
+    return [parameter.type ?? '-']
+  } else if ('schema' in parameter) {
+    const schemaType = parameter.schema.type
+    if (schemaType === 'array') {
+      const { type, refs } = formatSchemaType(parameter.schema)
+      return [type, refs]
+    }
+  }
+  return ['-']
 }
 
 function resolveDefinition(ref: string, definitions: Required<SchemaJsonV2>['definitions']) {
@@ -36,22 +97,15 @@ function resolveDefinition(ref: string, definitions: Required<SchemaJsonV2>['def
         })
       } else {
         if (value.type === 'array') {
-          const ref = (value.items as any)?.$ref
-          if (ref) {
-            refs.push(ref)
-            const subDefName = ref.split('/').pop() as any
-            fields.push({
-              name: key,
-              ...value,
-              type: `${value.type}<${subDefName}>` as any,
-            })
-          } else {
-            fields.push({
-              name: key,
-              ...value,
-              type: `${value.type}<${(value.items as any)?.type}>` as any,
-            })
-          }
+          const { type, refs: subDefs } = formatSchemaType(value)
+
+          refs.push(...subDefs)
+
+          fields.push({
+            name: key,
+            ...value,
+            type: type as any,
+          })
         } else {
           fields.push({
             name: key,
@@ -99,6 +153,10 @@ export interface OpenAPITransformDocPluginOptions extends OpenAPIPluginOptions {
    * exclude apis
    */
   exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  /**
+   * symbols
+   */
+  symbols?: Partial<typeof defaultSymbols>
 }
 
 export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITransformDocPluginOptions> {
@@ -112,7 +170,13 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
       exclude,
       skipOutput = false,
       onSuccess,
+      symbols: symbolsFromOptions = {},
     } = this.options
+
+    const symbols = {
+      ...defaultSymbols,
+      ...symbolsFromOptions,
+    }
 
     if (!skipOutput) {
       await fs.ensureDir(outputDir)
@@ -185,13 +249,13 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
 
             markdown.push(
               {
-                h3: '请求方法',
+                h3: symbols.method,
               },
               {
                 raw: formatQuoteString(method.toUpperCase()),
               },
               {
-                h3: '请求地址',
+                h3: symbols.uri,
               },
               {
                 raw: formatQuoteString(`${service.basePath}${rawUri}`),
@@ -207,13 +271,18 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
 
               markdown.push({
                 table: {
-                  headers: ['参数名称', '参数类型', !isResponse ? '是否必填' : '', '参数说明'].filter(Boolean),
-                  rows: fields.map((parameter: any) =>
+                  headers: [
+                    symbols.name,
+                    symbols.type,
+                    !isResponse ? symbols.required : '',
+                    symbols.description,
+                  ].filter(Boolean),
+                  rows: fields.map((parameter) =>
                     [
                       formatQuoteString(parameter.name || '-'),
                       formatQuoteString(parameter.type || '-'),
                       !isResponse
-                        ? formatQuoteString((!!(parameter.required || required.includes(parameter.name))).toString())
+                        ? formatQuoteString((!!(parameter.required || required.includes(parameter.name!))).toString())
                         : '',
                       parameter.description || '-',
                     ].filter(Boolean),
@@ -232,83 +301,73 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
               }
             }
 
+            function generateParametersTable(parameters: ParameterV2[]) {
+              const refs: string[] = []
+              markdown.push({
+                table: {
+                  headers: [symbols.name, symbols.type, symbols.required, symbols.description],
+                  rows: parameters.map((parameter) => {
+                    const [type, resolvedRefs] = formatParameterType(parameter)
+
+                    if (resolvedRefs) {
+                      refs.push(...resolvedRefs)
+                    }
+                    return [
+                      formatQuoteString(parameter.name || '-'),
+                      formatQuoteString(type),
+                      formatQuoteString((!!parameter.required).toString()),
+                      parameter.description || '-',
+                    ]
+                  }),
+                },
+              })
+
+              if (refs.length) {
+                const dedupedRefs = Array.from(new Set(refs))
+                dedupedRefs.forEach((ref) => {
+                  markdown.push({
+                    raw: `  - \`${ref.split('/').pop()}\``,
+                  })
+                  generateDefinitionTable(ref)
+                })
+              }
+            }
+
             if (parameters.length) {
               const bodyParameter = parameters.filter((parameter) => parameter.in === 'body')?.[0]
               const headerParameters = parameters.filter((parameter) => parameter.in === 'header')
               const queryParameters = parameters.filter((parameter) => parameter.in === 'query')
               const pathParameters = parameters.filter((parameter) => parameter.in === 'path')
               markdown.push({
-                h3: '请求参数',
+                h3: symbols.parameters,
               })
               if (headerParameters.length) {
                 markdown.push({
-                  raw: '- 请求头设置',
+                  raw: `- ${symbols.headerParameters}`,
                 })
-                markdown.push({
-                  table: {
-                    headers: ['参数名称', '参数类型', '是否必填', '参数说明'],
-                    rows: headerParameters.map((parameter: any) => [
-                      formatQuoteString(parameter.name),
-                      formatQuoteString(parameter.type),
-                      formatQuoteString((!!parameter.required).toString()),
-                      parameter.description || '-',
-                    ]),
-                  },
-                })
+                generateParametersTable(headerParameters)
               }
               if (pathParameters.length) {
                 markdown.push({
-                  raw: '- 路径参数',
+                  raw: `- ${symbols.pathParameters}`,
                 })
-                markdown.push({
-                  table: {
-                    headers: ['参数名称', '参数类型', '是否必填', '参数说明'],
-                    rows: pathParameters.map((parameter: any) => [
-                      formatQuoteString(parameter.name),
-                      formatQuoteString(parameter.type),
-                      formatQuoteString((!!parameter.required).toString()),
-                      parameter.description || '-',
-                    ]),
-                  },
-                })
+                generateParametersTable(pathParameters)
               }
               if (queryParameters.length) {
                 markdown.push({
-                  raw: '- 查询参数',
+                  raw: `- ${symbols.queryParameters}`,
                 })
-                markdown.push({
-                  table: {
-                    headers: ['参数名称', '参数类型', '是否必填', '参数说明'],
-                    rows: queryParameters.map((parameter: any) => [
-                      formatQuoteString(parameter.name),
-                      formatQuoteString(parameter.type),
-                      formatQuoteString((!!parameter.required).toString()),
-                      parameter.description || '-',
-                    ]),
-                  },
-                })
+                generateParametersTable(queryParameters)
               }
               if (bodyParameter) {
                 // 理论上来说 bodyParameters 只会有一个
                 markdown.push({
-                  raw: '- 请求体参数',
+                  raw: `- ${symbols.bodyParameters}`,
                 })
                 if ((bodyParameter as any).schema.$ref) {
                   generateDefinitionTable((bodyParameter as any).schema.$ref)
                 } else {
-                  markdown.push({
-                    table: {
-                      headers: ['参数名称', '参数类型', '是否必填', '参数说明'],
-                      rows: [
-                        [
-                          formatQuoteString(bodyParameter.name),
-                          formatQuoteString((bodyParameter as any).schema.type),
-                          formatQuoteString((!!bodyParameter.required).toString()),
-                          bodyParameter.description || '-',
-                        ],
-                      ],
-                    },
-                  })
+                  generateParametersTable([bodyParameter])
                 }
               }
             }
@@ -316,14 +375,14 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
             const response = responses['200'] as any
             if (response?.schema) {
               markdown.push({
-                h3: '返回值',
+                h3: symbols.responses,
               })
               if (response.schema?.$ref) {
                 generateDefinitionTable(response.schema.$ref, true)
               } else {
                 markdown.push({
                   table: {
-                    headers: ['参数名称', '参数类型', '参数说明'],
+                    headers: [symbols.name, symbols.type, symbols.description],
                     rows: [
                       [
                         formatQuoteString(response.name || '-'),
