@@ -2,27 +2,20 @@ import { OpenAPIPlugin, OpenAPIRunner } from '@opas/core'
 import { WriteFileMode } from '@opas/helper'
 import AppPlugin, { OpenAPITransformAppPluginOptions } from '@opas/plugin-app'
 import chalk from 'chalk'
-import { CosmiconfigResult } from 'cosmiconfig'
-import { CliOptions, OpasConfig } from './types'
-import { configExplore, getPathFromWorkDir, logger } from './utils'
+import { CliOptions } from './types'
+import { getPathFromWorkDir, logger, resolveConfig } from './utils'
 
 const transformApp = async (options: CliOptions) => {
   const { namespace: namespaces, config: configPath } = options
 
   const namespaceList = namespaces ? (Array.isArray(namespaces) ? namespaces : [namespaces]) : []
 
-  let searchResult: CosmiconfigResult
-  if (configPath) {
-    searchResult = await configExplore.load(configPath)
-  } else {
-    searchResult = await configExplore.search()
-  }
+  const config = await resolveConfig(configPath)
 
-  if (!searchResult) {
+  if (!config) {
     logger.error(chalk.redBright('No config file found'))
     process.exit(0)
   } else {
-    const { config } = searchResult
     const {
       configs = [],
       dtsDir: globalDtsDir = getPathFromWorkDir('src/interfaces'),
@@ -32,7 +25,7 @@ const transformApp = async (options: CliOptions) => {
       base: globalBase,
       extractField: globalExtractField,
       configParamTypeName,
-    } = config as OpasConfig
+    } = config
     await OpenAPIRunner.run(
       configs
         .filter(({ namespace, url }) => {

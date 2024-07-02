@@ -3,6 +3,7 @@ import { program } from 'commander'
 import fs from 'fs-extra'
 import path from 'path'
 import transformApp from './app'
+import transformDoc from './doc'
 import initConfig from './init'
 
 export * from './types'
@@ -21,4 +22,12 @@ program
   .option('-c, --config <config path>', 'opas config path')
   .option('-n, --namespace <namespace...>', 'namespace to generate')
   .action(transformApp)
-  .parse(process.argv)
+
+program
+  .command('doc')
+  .description('generate api doc from open api spec')
+  .option('-c, --config <config path>', 'opas config path')
+  .option('-n, --namespace <namespace...>', 'namespace to generate')
+  .action(transformDoc)
+
+program.parse(process.argv)

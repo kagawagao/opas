@@ -12,6 +12,7 @@ npx @opas/cli --help
 
 - `init`: Initialize `opas` config file
 - `app`: Generate API client from OpenAPI 2/3 spec
+- `doc`: Generate API docs from OpenAPI 2/3 spec
 
 ## Config
 
