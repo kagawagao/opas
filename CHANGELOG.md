@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/kagawagao/opas/compare/v0.9.2...v0.10.0) (2024-07-02)
+
+### Features
+
+- **cli:** add doc command ([d96a89b](https://github.com/kagawagao/opas/commit/d96a89b16cc33ebd7c5e25c5b5777467856a3fc2))
+
 ## [0.9.2](https://github.com/kagawagao/opas/compare/v0.9.1...v0.9.2) (2024-07-02)
 
 ### Bug Fixes
