@@ -19,10 +19,21 @@ import OpenAPITransformSDKPlugin from '@opas/plugin-sdk'
 OpenAPIRunner.run({
   url: 'http://petstore.swagger.io/v2/swagger.json',
   namespace: 'pets-store',
-  plugins: [new OpenAPITransformSDKPlugin({})],
+  plugins: [
+    new OpenAPITransformSDKPlugin({
+      // plugin options
+    }),
+  ],
 })
 ```
 
-## Options
+## Plugin Options
 
-see [src/index.ts](./src/index.ts)
+| Option           | Type                                                         | Description                            |
+| ---------------- | ------------------------------------------------------------ | -------------------------------------- |
+| `outputDir`      | `string?`                                                    | Output directory for the generated SDK |
+| `tagAlias`       | `TagAliasMapper \| Record<string, string>?`                  | Mapping of tag names to aliases        |
+| `classTemplate`  | `string?`                                                    | Template for generating class files    |
+| `methodTemplate` | `string?`                                                    | Template for generating method files   |
+| `include`        | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | Criteria to include APIs               |
+| `exclude`        | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | Criteria to exclude APIs               |

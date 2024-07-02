@@ -19,10 +19,24 @@ import OpenAPITransformAppPlugin from '@opas/plugin-app'
 OpenAPIRunner.run({
   url: 'http://petstore.swagger.io/v2/swagger.json',
   namespace: 'pets-store',
-  plugins: [new OpenAPITransformAppPlugin({})],
+  plugins: [
+    new OpenAPITransformAppPlugin({
+      // plugin options
+    }),
+  ],
 })
 ```
 
-## Options
+## Plugin Options
 
-see [src/index.ts](./src/index.ts)
+| Option                | Type                                                                  | Description                      |
+| --------------------- | --------------------------------------------------------------------- | -------------------------------- |
+| `apiDir`              | `string?`                                                             | api output dir                   |
+| `serviceDir`          | `string?`                                                             | service output dir               |
+| `dtsDir`              | `string?`                                                             | dts output dir                   |
+| `extractPath`         | `string?`                                                             | extractPath for api and service  |
+| `extractField`        | `string \| string[]?`                                                 | extract field from response data |
+| `baseUrl`             | `string \| ((extractPath?: string) => void)?`                         | base URL                         |
+| `writeFileMode`       | `WriteFileMode \| { api?: WriteFileMode; service?: WriteFileMode; }?` | write file mode                  |
+| `configParamTypeName` | `string?`                                                             | config param type name           |
+| `serviceImportPath`   | `string?`                                                             | service import path              |

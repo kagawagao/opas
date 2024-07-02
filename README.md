@@ -10,7 +10,6 @@ Open API toolkit for TS/JS
 - [x] Generate API docs from OpenAPI 2/3 spec
 - [x] Generate API client from OpenAPI 2/3 spec
 - [x] Generate API SDK from OpenAPI 2/3 spec
-- [ ] Generate UI from OpenAPI 2/3 spec
 
 ## Fundamentals
 
@@ -54,6 +53,10 @@ await OpenAPIRunner.run([
         outputDir: `your output dir`,
       }),
     ],
+    postSchema: (schema) => {
+      // do something with schema, e.g. modify schema
+      return schema
+    },
   },
 ])
 ```

@@ -19,10 +19,17 @@ import OpenAPITransformDefinitionPlugin from '@opas/plugin-definition'
 OpenAPIRunner.run({
   url: 'http://petstore.swagger.io/v2/swagger.json',
   namespace: 'pets-store',
-  plugins: [new OpenAPITransformDefinitionPlugin({})],
+  plugins: [
+    new OpenAPITransformDefinitionPlugin({
+      // plugin options
+    }),
+  ],
 })
 ```
 
-## Options
+## Plugin Options
 
-see [src/index.ts](./src/index.ts)
+| Option           | Type      | Description         |
+| ---------------- | --------- | ------------------- |
+| `outputDir`      | `string?` | The output dir      |
+| `outputFilename` | `string?` | The output filename |
