@@ -60,14 +60,49 @@ export interface OpenAPITransformAppPluginOptions extends OpenAPIPluginOptions {
    * service import path
    */
   serviceImportPath?: string
+  /**
+   * apis include filter
+   */
+  include?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  /**
+   * apis exclude filter
+   */
+  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[]
 }
 
 export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITransformAppPluginOptions> {
   public transform = async ({ apis, definition, service, schema }: ParserResult) => {
-    const { writeFileMode } = this.options
+    const { writeFileMode, include, exclude } = this.options
     const { api: apiMode = 'skip', service: serviceMode = 'warn' } = this.adaptorWriteFileModeArgs(writeFileMode)
+    const filteredApis = apis
+      .filter((api) => {
+        if (include) {
+          if (typeof include === 'function') {
+            return include(api)
+          } else if (Array.isArray(include)) {
+            return include.includes(api.operationId)
+          } else {
+            return include.test(api.uri)
+          }
+        } else {
+          return true
+        }
+      })
+      .filter((api) => {
+        if (exclude) {
+          if (typeof exclude === 'function') {
+            return !exclude(api)
+          } else if (Array.isArray(exclude)) {
+            return !exclude.includes(api.operationId)
+          } else {
+            return !exclude.test(api.uri)
+          }
+        } else {
+          return true
+        }
+      })
     await this.outputApis({
-      apis,
+      apis: filteredApis,
       service,
       writeFileMode: apiMode,
       openApiVersion: schema.openApiVersion ?? 2,
