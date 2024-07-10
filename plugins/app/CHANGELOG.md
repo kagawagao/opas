@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/kagawagao/opas/compare/v0.10.1...v0.11.0) (2024-07-10)
+
+### Features
+
+- **plugins:app:** add api filter support ([d0cca54](https://github.com/kagawagao/opas/commit/d0cca54fa87b30363a3c157cd2c15163fad00f0d))
+
 # [0.10.0](https://github.com/kagawagao/opas/compare/v0.9.2...v0.10.0) (2024-07-02)
 
 **Note:** Version bump only for package @opas/plugin-app
