@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.1](https://github.com/kagawagao/opas/compare/v0.10.0...v0.10.1) (2024-07-10)
+
+### Bug Fixes
+
+- **cli:** fix ts type checking error ([93654d2](https://github.com/kagawagao/opas/commit/93654d265d90c5d8e38bdd74ef2e84145761223c))
+
 # [0.10.0](https://github.com/kagawagao/opas/compare/v0.9.2...v0.10.0) (2024-07-02)
 
 ### Features
