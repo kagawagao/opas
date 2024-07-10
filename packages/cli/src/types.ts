@@ -1,4 +1,5 @@
 import { TransformerOptions } from '@opas/core'
+import { ParsedOperation } from '@opas/helper'
 import { OpenAPITransformAppPluginOptions } from '@opas/plugin-app'
 
 export interface Config extends TransformerOptions, Pick<OpenAPITransformAppPluginOptions, 'extractField'> {
@@ -26,6 +27,14 @@ export interface Config extends TransformerOptions, Pick<OpenAPITransformAppPlug
    * 基础路径
    */
   base?: string
+  /**
+   * apis include filter
+   */
+  include?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  /**
+   * apis exclude filter
+   */
+  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[]
 }
 
 export interface OpasConfig

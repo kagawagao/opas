@@ -53,6 +53,7 @@ const transformApp = async (options: CliOptions) => {
 
           const plugins: OpenAPIPlugin<OpenAPITransformAppPluginOptions>[] = [
             new AppPlugin({
+              ...options,
               serviceDir,
               apiDir,
               dtsDir,
