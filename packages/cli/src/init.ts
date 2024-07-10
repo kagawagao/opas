@@ -45,7 +45,9 @@ const initConfig = async () => {
   // check if the file already exists
   const searchResult = await configExplore.search(process.cwd())
   if (searchResult?.filepath) {
-    const { overwrite } = await inquirer.prompt([
+    const { overwrite } = await inquirer.prompt<{
+      overwrite: boolean
+    }>([
       {
         type: 'confirm',
         name: 'overwrite',
