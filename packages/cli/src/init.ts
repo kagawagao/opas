@@ -1,9 +1,9 @@
-import fs from 'fs/promises'
-import inquirer from 'inquirer'
-import path from 'node:path'
-import { configExplore, logger } from './utils'
+import fs from 'fs/promises';
+import inquirer from 'inquirer';
+import path from 'node:path';
+import { configExplore, logger } from './utils';
 
-const templatePath = path.resolve(__dirname, '../templates')
+const templatePath = path.resolve(__dirname, '../templates');
 
 const templates = {
   typescript: {
@@ -14,10 +14,10 @@ const templates = {
     filename: 'opas.config.cjs',
     path: path.resolve(templatePath, 'javascript.tpl'),
   },
-}
+};
 
 interface UserAnswer {
-  useTypeScript: boolean
+  useTypeScript: boolean;
 }
 
 async function generateConfigFile() {
@@ -29,24 +29,24 @@ async function generateConfigFile() {
         message: 'Would you like to use TypeScript?',
         default: true,
       },
-    ])
-    const template = useTypeScript ? templates.typescript : templates.javascript
-    logger.info(`Creating ${template.filename}...`)
-    const content = await fs.readFile(template.path, 'utf-8')
-    await fs.writeFile(path.resolve(process.cwd(), template.filename), content)
-    logger.success(`Created ${template.filename}`)
+    ]);
+    const template = useTypeScript ? templates.typescript : templates.javascript;
+    logger.info(`Creating ${template.filename}...`);
+    const content = await fs.readFile(template.path, 'utf-8');
+    await fs.writeFile(path.resolve(process.cwd(), template.filename), content);
+    logger.success(`Created ${template.filename}`);
   } catch (error) {
-    logger.error(error)
-    process.exit(1)
+    logger.error(error);
+    process.exit(1);
   }
 }
 
 const initConfig = async () => {
   // check if the file already exists
-  const searchResult = await configExplore.search(process.cwd())
+  const searchResult = await configExplore.search(process.cwd());
   if (searchResult?.filepath) {
     const { overwrite } = await inquirer.prompt<{
-      overwrite: boolean
+      overwrite: boolean;
     }>([
       {
         type: 'confirm',
@@ -54,17 +54,17 @@ const initConfig = async () => {
         message: 'Config file already exists. Do you want to overwrite it?',
         default: false,
       },
-    ])
+    ]);
     if (overwrite) {
       // remove exist file
-      await fs.unlink(searchResult.filepath)
-      await generateConfigFile()
+      await fs.unlink(searchResult.filepath);
+      await generateConfigFile();
     } else {
-      logger.info('Exiting...')
+      logger.info('Exiting...');
     }
   } else {
-    await generateConfigFile()
+    await generateConfigFile();
   }
-}
+};
 
-export default initConfig
+export default initConfig;

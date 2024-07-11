@@ -1,40 +1,40 @@
-import { TransformerOptions } from '@opas/core'
-import { ParsedOperation } from '@opas/helper'
-import { OpenAPITransformAppPluginOptions } from '@opas/plugin-app'
+import { TransformerOptions } from '@opas/core';
+import { ParsedOperation } from '@opas/helper';
+import { OpenAPITransformAppPluginOptions } from '@opas/plugin-app';
 
 export interface Config extends TransformerOptions, Pick<OpenAPITransformAppPluginOptions, 'extractField'> {
   /**
    * 生成的类型定义文件目录
    */
-  dtsDir?: string
+  dtsDir?: string;
   /**
    * 生成的 service 文件目录
    */
-  serviceDir?: string
+  serviceDir?: string;
   /**
    * 生成的 api 文件目录
    */
-  apiDir?: string
+  apiDir?: string;
   /**
    * 生成的 docs 文件目录
    */
-  docsDir?: string
+  docsDir?: string;
   /**
    * 环境变量
    */
-  env?: string
+  env?: string;
   /**
    * 基础路径
    */
-  base?: string
+  base?: string;
   /**
    * apis include filter
    */
-  include?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  include?: ((api: ParsedOperation) => boolean) | RegExp | string[];
   /**
    * apis exclude filter
    */
-  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[];
 }
 
 export interface OpasConfig
@@ -42,15 +42,15 @@ export interface OpasConfig
   /**
    * 配置项
    */
-  configs: Config[]
+  configs: Config[];
   /**
    * 请求参数配置类型名称
    * @default AxiosRequestConfig
    */
-  configParamTypeName?: string
+  configParamTypeName?: string;
 }
 
 export interface CliOptions {
-  config?: string
-  namespace?: string | string[]
+  config?: string;
+  namespace?: string | string[];
 }

@@ -2,5 +2,5 @@
  * format api uri
  */
 export function formatApiUri(uri: string) {
-  return uri.replace(/\/\{.+\}/g, '')
+  return uri.replace(/\/\{.+\}/g, '');
 }

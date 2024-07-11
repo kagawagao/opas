@@ -1,7 +1,7 @@
-import generate from '@babel/generator'
-import template from '@babel/template'
-import { Statement } from '@babel/types'
-import { OpenAPIPlugin, OpenAPIPluginOptions, ParserResult } from '@opas/core'
+import generate from '@babel/generator';
+import template from '@babel/template';
+import { Statement } from '@babel/types';
+import { OpenAPIPlugin, OpenAPIPluginOptions, ParserResult } from '@opas/core';
 import {
   ParsedOperation,
   ServiceDescriptor,
@@ -10,37 +10,37 @@ import {
   formatCode,
   formatService,
   outFile,
-} from '@opas/helper'
-import { Schema } from 'dtsgenerator'
-import fs from 'fs-extra'
-import { kebabCase } from 'lodash'
-import os from 'node:os'
-import path from 'node:path'
-import { DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME, DEFAULT_SERVICE_DIR } from './constants'
+} from '@opas/helper';
+import { Schema } from 'dtsgenerator';
+import fs from 'fs-extra';
+import { kebabCase } from 'lodash';
+import os from 'node:os';
+import path from 'node:path';
+import { DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME, DEFAULT_SERVICE_DIR } from './constants';
 
 export type PluginWriteFileMode =
   | string
   | WriteFileMode
   | {
-      api?: WriteFileMode
-      service?: WriteFileMode
-    }
+      api?: WriteFileMode;
+      service?: WriteFileMode;
+    };
 
 export interface OpenAPITransformAppPluginOptions extends OpenAPIPluginOptions {
   // api output dir
-  apiDir?: string
+  apiDir?: string;
   // service output dir
-  serviceDir?: string
+  serviceDir?: string;
   // dts output dir
-  dtsDir?: string
+  dtsDir?: string;
   // extractPath for api and service
-  extractPath?: string
+  extractPath?: string;
   /**
    * extract field from response data
    * @example extractField = 'data'
    */
-  extractField?: string | string[]
-  baseUrl?: string | ((extractPath?: string) => void)
+  extractField?: string | string[];
+  baseUrl?: string | ((extractPath?: string) => void);
   /**
    * write file mode
    * @default 'warn'
@@ -48,59 +48,59 @@ export interface OpenAPITransformAppPluginOptions extends OpenAPIPluginOptions {
   writeFileMode?:
     | WriteFileMode
     | {
-        api?: WriteFileMode
-        service?: WriteFileMode
-      }
+        api?: WriteFileMode;
+        service?: WriteFileMode;
+      };
   /**
    * config param type name
    * @default AxiosRequestConfig
    */
-  configParamTypeName?: string
+  configParamTypeName?: string;
   /**
    * service import path
    */
-  serviceImportPath?: string
+  serviceImportPath?: string;
   /**
    * apis include filter
    */
-  include?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  include?: ((api: ParsedOperation) => boolean) | RegExp | string[];
   /**
    * apis exclude filter
    */
-  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[]
+  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[];
 }
 
 export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITransformAppPluginOptions> {
   public transform = async ({ apis, definition, service, schema }: ParserResult) => {
-    const { writeFileMode, include, exclude } = this.options
-    const { api: apiMode = 'skip', service: serviceMode = 'warn' } = this.adaptorWriteFileModeArgs(writeFileMode)
+    const { writeFileMode, include, exclude } = this.options;
+    const { api: apiMode = 'skip', service: serviceMode = 'warn' } = this.adaptorWriteFileModeArgs(writeFileMode);
     const filteredApis = apis
       .filter((api) => {
         if (include) {
           if (typeof include === 'function') {
-            return include(api)
+            return include(api);
           } else if (Array.isArray(include)) {
-            return include.includes(api.operationId)
+            return include.includes(api.operationId);
           } else {
-            return include.test(api.uri)
+            return include.test(api.uri);
           }
         } else {
-          return true
+          return true;
         }
       })
       .filter((api) => {
         if (exclude) {
           if (typeof exclude === 'function') {
-            return !exclude(api)
+            return !exclude(api);
           } else if (Array.isArray(exclude)) {
-            return !exclude.includes(api.operationId)
+            return !exclude.includes(api.operationId);
           } else {
-            return !exclude.test(api.uri)
+            return !exclude.test(api.uri);
           }
         } else {
-          return true
+          return true;
         }
-      })
+      });
     await this.outputApis({
       apis: filteredApis,
       service,
@@ -108,19 +108,19 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
       openApiVersion: schema.openApiVersion ?? 2,
       configParamTypeName: this.options.configParamTypeName ?? DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME,
       schema,
-    })
-    await this.outputService(service.basePath, service, serviceMode)
-    await this.outputDts(service, definition)
-  }
+    });
+    await this.outputService(service.basePath, service, serviceMode);
+    await this.outputDts(service, definition);
+  };
 
   private outputDts = async (service: ServiceDescriptor, definition: string) => {
-    const { cwd = process.cwd(), dtsDir = path.join(cwd, 'src/interfaces') } = this.options
-    const dtsFile = path.join(dtsDir, `${kebabCase(service.name)}.d.ts`)
+    const { cwd = process.cwd(), dtsDir = path.join(cwd, 'src/interfaces') } = this.options;
+    const dtsFile = path.join(dtsDir, `${kebabCase(service.name)}.d.ts`);
 
     const formattedContent = await formatCode({
       source: definition,
       filePath: dtsFile,
-    })
+    });
 
     await outFile({
       tips: {
@@ -131,16 +131,16 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
       code: formattedContent,
       outFileName: dtsFile,
       writeFileMode: 'overwrite',
-    })
-  }
+    });
+  };
 
   private joinUrl = (pre: string = '', next: string = '') => {
     if (next.startsWith('http')) {
-      return next
+      return next;
     } else {
-      return pre.replace(/\/$/, '') + '/' + next.replace(/^\//, '')
+      return pre.replace(/\/$/, '') + '/' + next.replace(/^\//, '');
     }
-  }
+  };
 
   private outputService = async (basePath = '', service: ServiceDescriptor, writeFileMode: WriteFileMode | string) => {
     const {
@@ -149,29 +149,29 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
       extractPath = '',
       baseUrl,
       serviceImportPath = '../utils/service',
-    } = this.options
-    const serviceName = service.name
-    const mergedPath = this.joinUrl(basePath, extractPath)
+    } = this.options;
+    const serviceName = service.name;
+    const mergedPath = this.joinUrl(basePath, extractPath);
     const templateSource = await fs.readFile(path.join(__dirname, '../templates/service.tpl'), {
       encoding: 'utf-8',
-    })
+    });
 
     const templateAst = template(templateSource, {
       plugins: ['typescript'],
-    })
+    });
     const statements = templateAst({
       SERVICE_NAME: `${serviceName}Service`,
       BASE_URL: typeof baseUrl === 'function' ? baseUrl(mergedPath) : `'${this.joinUrl(baseUrl, mergedPath)}'`,
       SERVICE_PATH: serviceImportPath,
-    }) as Statement[]
+    }) as Statement[];
 
-    const code = statements.map((statement) => generate(statement).code).join('\n')
-    const outFileName = serviceDir + `/${kebabCase(serviceName)}.ts`
+    const code = statements.map((statement) => generate(statement).code).join('\n');
+    const outFileName = serviceDir + `/${kebabCase(serviceName)}.ts`;
     const formattedContent = await formatCode({
       source: code,
       filePath: outFileName,
       parser: 'typescript',
-    })
+    });
 
     await outFile({
       tips: {
@@ -182,8 +182,8 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
       code: formattedContent,
       outFileName,
       writeFileMode,
-    })
-  }
+    });
+  };
 
   private outputApis = async ({
     apis,
@@ -193,47 +193,47 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
     configParamTypeName = DEFAULT_REQUEST_CONFIG_PARAM_TYPE_NAME,
     schema,
   }: {
-    apis: ParsedOperation[]
-    service: ServiceDescriptor
-    writeFileMode: WriteFileMode | string
-    openApiVersion: 2 | 3
-    configParamTypeName: string
-    schema: Schema
+    apis: ParsedOperation[];
+    service: ServiceDescriptor;
+    writeFileMode: WriteFileMode | string;
+    openApiVersion: 2 | 3;
+    configParamTypeName: string;
+    schema: Schema;
   }) => {
-    const { cwd = process.cwd(), apiDir = path.join(cwd, 'src/apis'), extractField } = this.options
-    const serviceName = service.name
+    const { cwd = process.cwd(), apiDir = path.join(cwd, 'src/apis'), extractField } = this.options;
+    const serviceName = service.name;
     const apiAstTemplate = await fs.readFile(path.join(__dirname, '../templates/api.tpl'), {
       encoding: 'utf-8',
-    })
+    });
     const render = createRenderer(apiAstTemplate, {
       openApiVersion,
       extractField,
       configParamTypeName,
       schema,
-    })
+    });
     // add service import code
-    const importServiceCode = this.createServiceImport(service)
+    const importServiceCode = this.createServiceImport(service);
     // add apis
     const apisCode = apis
       .map((api) => {
-        return render(api, serviceName)
+        return render(api, serviceName);
       })
-      .join(os.EOL)
-    const serviceFileName = kebabCase(serviceName)
-    const outFileName = path.join(apiDir, `${serviceFileName}.ts`)
+      .join(os.EOL);
+    const serviceFileName = kebabCase(serviceName);
+    const outFileName = path.join(apiDir, `${serviceFileName}.ts`);
 
     const content = `
     import type { ${configParamTypeName} } from 'axios';
 
     ${importServiceCode}
     ${apisCode}
-    `
+    `;
 
     const formattedContent = await formatCode({
       source: content,
       filePath: outFileName,
       parser: 'typescript',
-    })
+    });
 
     await outFile({
       tips: {
@@ -244,24 +244,24 @@ export default class OpenAPITransformAppPlugin extends OpenAPIPlugin<OpenAPITran
       outFileName,
       code: formattedContent,
       writeFileMode,
-    })
-  }
+    });
+  };
 
   private createServiceImport = (service: ServiceDescriptor) => {
-    const serviceName = service.name
-    const importee = formatService(serviceName)
-    const serviceFileName = kebabCase(serviceName)
-    const importer = path.posix.join(DEFAULT_SERVICE_DIR, serviceFileName)
-    return `import ${importee} from '${importer}';`
-  }
+    const serviceName = service.name;
+    const importee = formatService(serviceName);
+    const serviceFileName = kebabCase(serviceName);
+    const importer = path.posix.join(DEFAULT_SERVICE_DIR, serviceFileName);
+    return `import ${importee} from '${importer}';`;
+  };
 
   private adaptorWriteFileModeArgs = (writeFileMode: PluginWriteFileMode = 'warn') => {
     if (typeof writeFileMode === 'string') {
       return {
         api: writeFileMode,
         service: writeFileMode,
-      }
+      };
     }
-    return writeFileMode
-  }
+    return writeFileMode;
+  };
 }

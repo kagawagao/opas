@@ -1,10 +1,10 @@
-import { ParserOptions } from './parser'
-import OpenAPIPlugin, { OpenAPIPluginOptions } from './plugin'
-import OpenAPITransformer, { TransformerOptions } from './transformer'
+import { ParserOptions } from './parser';
+import OpenAPIPlugin, { OpenAPIPluginOptions } from './plugin';
+import OpenAPITransformer, { TransformerOptions } from './transformer';
 
 export interface RunnerOption {
-  plugins?: OpenAPIPlugin<OpenAPIPluginOptions>[]
-  namespaces: ParserOptions[]
+  plugins?: OpenAPIPlugin<OpenAPIPluginOptions>[];
+  namespaces: ParserOptions[];
 }
 
 /**
@@ -16,8 +16,8 @@ export default class OpenAPIRunner {
    * @param options transformer options
    */
   private static async runSingle(options: TransformerOptions) {
-    const transformer = new OpenAPITransformer(options)
-    await transformer.transform()
+    const transformer = new OpenAPITransformer(options);
+    await transformer.transform();
   }
 
   /**
@@ -26,9 +26,9 @@ export default class OpenAPIRunner {
    */
   public static async run(options: RunnerOption | TransformerOptions[]) {
     if (Array.isArray(options)) {
-      await Promise.all(options.map(async (option) => await OpenAPIRunner.runSingle(option)))
+      await Promise.all(options.map(async (option) => await OpenAPIRunner.runSingle(option)));
     } else {
-      const { plugins = [], namespaces } = options
+      const { plugins = [], namespaces } = options;
       await Promise.all(
         namespaces.map(
           async (option) =>
@@ -37,7 +37,7 @@ export default class OpenAPIRunner {
               ...option,
             }),
         ),
-      )
+      );
     }
   }
 }

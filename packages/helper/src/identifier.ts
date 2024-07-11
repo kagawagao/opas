@@ -1,6 +1,6 @@
-import { toTypeName } from 'dtsgenerator/dist/core/validateIdentifier'
-import { startCase } from 'lodash'
-import { ScriptTarget } from 'typescript'
+import { toTypeName } from 'dtsgenerator/dist/core/validateIdentifier';
+import { startCase } from 'lodash';
+import { ScriptTarget } from 'typescript';
 
 /**
  * format open api generic type to typescript type
@@ -9,7 +9,7 @@ import { ScriptTarget } from 'typescript'
  * @returns formatted type
  */
 export function formatGenerics(type: string): string {
-  return toTypeName(startCase(type), ScriptTarget.Latest)
+  return toTypeName(startCase(type), ScriptTarget.Latest);
 }
 
 /**
@@ -18,5 +18,5 @@ export function formatGenerics(type: string): string {
  * @returns formatted type
  */
 export function formatTypeName(str: string) {
-  return toTypeName(str, ScriptTarget.Latest)
+  return toTypeName(str, ScriptTarget.Latest);
 }

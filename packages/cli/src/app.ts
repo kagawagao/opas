@@ -1,20 +1,20 @@
-import { OpenAPIPlugin, OpenAPIRunner } from '@opas/core'
-import { WriteFileMode } from '@opas/helper'
-import AppPlugin, { OpenAPITransformAppPluginOptions } from '@opas/plugin-app'
-import chalk from 'chalk'
-import { CliOptions } from './types'
-import { getPathFromWorkDir, logger, resolveConfig } from './utils'
+import { OpenAPIPlugin, OpenAPIRunner } from '@opas/core';
+import { WriteFileMode } from '@opas/helper';
+import AppPlugin, { OpenAPITransformAppPluginOptions } from '@opas/plugin-app';
+import chalk from 'chalk';
+import { CliOptions } from './types';
+import { getPathFromWorkDir, logger, resolveConfig } from './utils';
 
 const transformApp = async (options: CliOptions) => {
-  const { namespace: namespaces, config: configPath } = options
+  const { namespace: namespaces, config: configPath } = options;
 
-  const namespaceList = namespaces ? (Array.isArray(namespaces) ? namespaces : [namespaces]) : []
+  const namespaceList = namespaces ? (Array.isArray(namespaces) ? namespaces : [namespaces]) : [];
 
-  const config = await resolveConfig(configPath)
+  const config = await resolveConfig(configPath);
 
   if (!config) {
-    logger.error(chalk.redBright('No config file found'))
-    process.exit(0)
+    logger.error(chalk.redBright('No config file found'));
+    process.exit(0);
   } else {
     const {
       configs = [],
@@ -25,18 +25,18 @@ const transformApp = async (options: CliOptions) => {
       base: globalBase,
       extractField: globalExtractField,
       configParamTypeName,
-    } = config
+    } = config;
     await OpenAPIRunner.run(
       configs
         .filter(({ namespace, url }) => {
           if (!url) {
-            logger.error(chalk.redBright(`${namespace}: url is required`))
-            return false
+            logger.error(chalk.redBright(`${namespace}: url is required`));
+            return false;
           }
           if (namespaceList.length === 0) {
-            return true
+            return true;
           }
-          return namespaceList.includes(namespace)
+          return namespaceList.includes(namespace);
         })
         .map((item) => {
           const {
@@ -49,7 +49,7 @@ const transformApp = async (options: CliOptions) => {
             base = globalBase,
             extractField = globalExtractField,
             ...options
-          } = item
+          } = item;
 
           const plugins: OpenAPIPlugin<OpenAPITransformAppPluginOptions>[] = [
             new AppPlugin({
@@ -64,32 +64,32 @@ const transformApp = async (options: CliOptions) => {
               baseUrl: (extractPath = '') => {
                 if (extractPath.startsWith('http')) {
                   // absolute path
-                  return `'${extractPath}'`
+                  return `'${extractPath}'`;
                 } else if (base) {
                   // relative path
-                  return `'${base}' + '${extractPath}'`
+                  return `'${base}' + '${extractPath}'`;
                 } else if (env) {
                   // env path
-                  return `${env} + '${extractPath}'`
+                  return `${env} + '${extractPath}'`;
                 }
                 // default path
-                return `'${extractPath}'`
+                return `'${extractPath}'`;
               },
               extractField,
               configParamTypeName,
             }),
-          ]
+          ];
 
           return {
             ...options,
             url,
             namespace,
             plugins,
-          }
+          };
         }),
-    )
+    );
   }
-  console.log()
-}
+  console.log();
+};
 
-export default transformApp
+export default transformApp;

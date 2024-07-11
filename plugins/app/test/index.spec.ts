@@ -1,8 +1,8 @@
-import { OpenAPIRunner } from '@opas/core'
-import { WriteFileMode } from '@opas/helper'
-import fs from 'fs-extra'
-import path from 'node:path'
-import OpenAPITransformAppPlugin from '../src'
+import { OpenAPIRunner } from '@opas/core';
+import { WriteFileMode } from '@opas/helper';
+import fs from 'fs-extra';
+import path from 'node:path';
+import OpenAPITransformAppPlugin from '../src';
 
 describe('app', () => {
   it('should generate app client with openapi v2', async () => {
@@ -18,12 +18,12 @@ describe('app', () => {
           }),
         ],
       },
-    ])
-    const apiFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/apis/artist.ts'), 'utf-8')
-    const serviceFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/services/artist.ts'), 'utf-8')
-    expect(apiFileContent.trim()).not.toEqual('')
-    expect(serviceFileContent.trim()).not.toEqual('')
-  })
+    ]);
+    const apiFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/apis/artist.ts'), 'utf-8');
+    const serviceFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/services/artist.ts'), 'utf-8');
+    expect(apiFileContent.trim()).not.toEqual('');
+    expect(serviceFileContent.trim()).not.toEqual('');
+  });
 
   it('should generate app client with openapi v3', async () => {
     await OpenAPIRunner.run([
@@ -39,10 +39,10 @@ describe('app', () => {
           }),
         ],
       },
-    ])
-    const apiFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/apis/pets-store.ts'), 'utf-8')
-    const serviceFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/services/pets-store.ts'), 'utf-8')
-    expect(apiFileContent.trim()).not.toEqual('')
-    expect(serviceFileContent.trim()).not.toEqual('')
-  })
-})
+    ]);
+    const apiFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/apis/pets-store.ts'), 'utf-8');
+    const serviceFileContent = await fs.readFile(path.resolve(__dirname, './fixtures/services/pets-store.ts'), 'utf-8');
+    expect(apiFileContent.trim()).not.toEqual('');
+    expect(serviceFileContent.trim()).not.toEqual('');
+  });
+});

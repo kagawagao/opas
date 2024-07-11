@@ -1,7 +1,7 @@
-import { OpenAPIRunner } from '@opas/core'
-import fs from 'fs-extra'
-import path from 'node:path'
-import OpenAPITransformDocPlugin from '../src'
+import { OpenAPIRunner } from '@opas/core';
+import fs from 'fs-extra';
+import path from 'node:path';
+import OpenAPITransformDocPlugin from '../src';
 
 describe('doc', () => {
   it('should generate doc', async () => {
@@ -15,8 +15,8 @@ describe('doc', () => {
           }),
         ],
       },
-    ])
-    const fileContent = await fs.readFile(path.resolve(__dirname, './fixtures/pets-store.md'), 'utf-8')
-    expect(fileContent.trim()).not.toEqual('')
-  })
-})
+    ]);
+    const fileContent = await fs.readFile(path.resolve(__dirname, './fixtures/pets-store.md'), 'utf-8');
+    expect(fileContent.trim()).not.toEqual('');
+  });
+});
