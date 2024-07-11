@@ -12,19 +12,21 @@ npm install @opas/core @opas/plugin-app
 
 ### Use
 
-```js
-import { OpenAPIRunner } from '@opas/core'
-import OpenAPITransformAppPlugin from '@opas/plugin-app'
+```ts
+import { OpenAPIRunner } from '@opas/core';
+import OpenAPITransformAppPlugin from '@opas/plugin-app';
 
-OpenAPIRunner.run({
-  url: 'http://petstore.swagger.io/v2/swagger.json',
-  namespace: 'pets-store',
-  plugins: [
-    new OpenAPITransformAppPlugin({
-      // plugin options
-    }),
-  ],
-})
+OpenAPIRunner.run([
+  {
+    url: 'http://petstore.swagger.io/v2/swagger.json',
+    namespace: 'pets-store',
+    plugins: [
+      new OpenAPITransformAppPlugin({
+        // plugin options
+      }),
+    ],
+  },
+]);
 ```
 
 ## Plugin Options
@@ -40,3 +42,5 @@ OpenAPIRunner.run({
 | `writeFileMode`       | `WriteFileMode \| { api?: WriteFileMode; service?: WriteFileMode; }?` | write file mode                  |
 | `configParamTypeName` | `string?`                                                             | config param type name           |
 | `serviceImportPath`   | `string?`                                                             | service import path              |
+| `include`             | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?`          | include filter                   |
+| `exclude`             | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?`          | exclude filter                   |
