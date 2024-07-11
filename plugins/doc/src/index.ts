@@ -373,7 +373,10 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
               }
             }
 
-            const response = responses['200'] as any;
+            const successResponse = (responses[200] ?? responses.default) as any;
+            const responseContent = (successResponse as any)?.content;
+            const response = responseContent?.['application/json'] ?? responseContent?.['*/*'];
+            console.log(response);
             if (response?.schema) {
               markdown.push({
                 h3: symbols.responses,
