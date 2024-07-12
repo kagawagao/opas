@@ -139,8 +139,8 @@ export default class OpenAPIParser {
       const formattedUri = formatApiUri(uri);
       for (const method in pathItem) {
         const operation = pathItem[method as keyof PathItem] as Operation;
-        const { requestBody } = operation as OpenApisV3.SchemaJson.Definitions.Operation;
-        if (requestBody) {
+        if ('requestBody' in operation && operation.requestBody) {
+          const { requestBody } = operation;
           operation.parameters = operation.parameters || [];
           const required = '$ref' in requestBody ? true : requestBody.required;
           const schema = 'content' in requestBody ? Object.values(requestBody.content)[0].schema : requestBody;
@@ -152,14 +152,30 @@ export default class OpenAPIParser {
           });
         }
 
-        apis.push({
+        let successResponseKey = '200';
+        if (operation.responses) {
+          const keys = Object.keys(operation.responses);
+          const findKey = keys.find((key) => key.startsWith('2'));
+          if (findKey) {
+            successResponseKey = findKey;
+          } else if (!successResponseKey && keys.includes('default')) {
+            successResponseKey = 'default';
+          }
+        }
+
+        const successResponse = operation.responses[successResponseKey];
+
+        const parsedOperation: ParsedOperation = {
           ...operation,
           uri: formattedUri,
           formattedUri,
           rawUri: uri,
           method,
           operationId: operation.operationId || uniqueId(),
-        });
+          successResponse,
+        };
+
+        apis.push(parsedOperation);
       }
     }
     // sort apis by uri

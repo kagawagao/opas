@@ -26,6 +26,22 @@ export interface FormDataParameters extends ParametersBase {
 
 export type ParametersType = BodyParameters | QueryParameters | PathParameters | FormDataParameters;
 
+export type OpenAPISchemaJSON = OpenApisV2.SchemaJson | OpenApisV3.SchemaJson;
+
+export type SchemaJsonV2 = OpenApisV2.SchemaJson;
+
+export type PathItem = OpenApisV2.SchemaJson.Definitions.PathItem | OpenApisV3.SchemaJson.Definitions.PathItem;
+
+export type Operation = OpenApisV2.SchemaJson.Definitions.Operation | OpenApisV3.SchemaJson.Definitions.Operation;
+
+export type ParametersList = OpenApisV2.SchemaJson.Definitions.ParametersList;
+
+export type ParameterV2 = OpenApisV2.SchemaJson.Definitions.Parameter;
+
+export type ResponseValue =
+  | OpenApisV2.SchemaJson.Definitions.ResponseValue
+  | OpenApisV3.SchemaJson.Definitions.ResponseOrReference;
+
 export interface API {
   /**
    * api summary
@@ -46,7 +62,7 @@ export interface API {
   /**
    * raw api response
    */
-  rawResponse?: Response;
+  rawResponse?: ResponseValue;
   /**
    * api method
    */
@@ -59,14 +75,6 @@ export interface API {
    * api operationId
    */
   operationId: string;
-}
-
-export interface Response {
-  description: string;
-  schema?: {
-    $ref?: string;
-    type?: string;
-  };
 }
 
 export interface Parameters {
@@ -170,20 +178,8 @@ export interface CreateResponseOptions {
   isV3: boolean;
   extractField?: string | string[];
   schema?: Schema;
-  raw?: Response;
+  raw?: ResponseValue;
 }
-
-export type OpenAPISchemaJSON = OpenApisV2.SchemaJson | OpenApisV3.SchemaJson;
-
-export type SchemaJsonV2 = OpenApisV2.SchemaJson;
-
-export type PathItem = OpenApisV2.SchemaJson.Definitions.PathItem | OpenApisV3.SchemaJson.Definitions.PathItem;
-
-export type Operation = OpenApisV2.SchemaJson.Definitions.Operation | OpenApisV3.SchemaJson.Definitions.Operation;
-
-export type ParametersList = OpenApisV2.SchemaJson.Definitions.ParametersList;
-
-export type ParameterV2 = OpenApisV2.SchemaJson.Definitions.Parameter;
 
 export interface ServiceDescriptor {
   name: string;
@@ -200,4 +196,5 @@ export type ParsedOperation = Operation & {
   formattedUri: string;
   method: string;
   operationId: string;
+  successResponse?: ResponseValue;
 };

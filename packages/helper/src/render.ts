@@ -3,7 +3,6 @@ import template from '@babel/template';
 import * as t from '@babel/types';
 import camelcase from 'camelcase';
 import { Schema } from 'dtsgenerator';
-import { OpenApisV3 } from 'dtsgenerator/dist/core/openApiV3';
 import { pascalCase } from './case';
 import { SUPPORT_PARAMETERS_TYPES } from './constants';
 import { formatGenerics, formatTypeName } from './identifier';
@@ -16,7 +15,7 @@ import {
   Parameters,
   ParametersType,
   ParsedOperation,
-  Response,
+  ResponseValue,
 } from './types';
 
 function isSupportParametersType(type: string) {
@@ -41,17 +40,68 @@ function formatParameters(parameters: any[] = []): API['parameters'] {
   }));
 }
 
-function formatResponse(response: Response) {
-  const responseContent = (response as OpenApisV3.SchemaJson.Definitions.Response)?.content;
-  const jsonResponse = responseContent?.['application/json'] ?? responseContent?.['*/*'];
-  const ref = response?.schema?.$ref || jsonResponse?.schema?.$ref;
-  const rawType = response?.schema?.type ?? (jsonResponse?.schema as any)?.type;
+function getResponseRef(response?: ResponseValue) {
+  if (!response) {
+    return '';
+  }
+  if ('content' in response) {
+    // open api v3
+    const responseContent = response.content;
+    const jsonResponse = responseContent?.['application/json'] ?? responseContent?.['*/*'];
+    if (jsonResponse) {
+      const responseSchema = jsonResponse.schema;
+      if (responseSchema?.$ref) {
+        return responseSchema.$ref;
+      }
+    }
+  } else if ('schema' in response) {
+    // open api v2
+    if (response.schema && response.schema.type !== 'file' && response.schema.$ref) {
+      return response.schema.$ref;
+    }
+  }
+  return '';
+}
+
+function formatResponse(response?: ResponseValue) {
+  if (!response) {
+    return undefined;
+  }
+  const ref: string = getResponseRef(response);
+  let rawType: any = '';
+  let items: any;
+  if ('content' in response) {
+    // open api v3
+    const responseContent = response.content;
+    const jsonResponse = responseContent?.['application/json'] ?? responseContent?.['*/*'];
+    if (jsonResponse) {
+      const responseSchema = jsonResponse.schema;
+      if (responseSchema && 'type' in responseSchema) {
+        rawType = responseSchema.type;
+        if (rawType === 'array') {
+          items = responseSchema.items;
+        }
+      }
+    }
+  } else if ('schema' in response) {
+    // open api v2
+    if (response.schema) {
+      if (response.schema.type === 'file') {
+        return 'Blob';
+      } else if (response.schema.type) {
+        rawType = response.schema.type;
+        if (rawType === 'array') {
+          items = response.schema.items;
+        }
+      }
+    }
+  }
+
   if (ref) {
     const type = ref.split('/').pop() || '';
     return formatTypeName(type);
   } else if (rawType) {
     if (rawType === 'array') {
-      const items = (response?.schema as any)?.items || (jsonResponse?.schema as any)?.items;
       if (items?.$ref) {
         const type = items.$ref.split('/').pop() || '';
         return formatTypeName(type) + '[]';
@@ -97,9 +147,7 @@ function createResponse(options: CreateResponseOptions) {
     } else if (extractField) {
       // need extract field
       if (schema && raw) {
-        const responseContent = (raw as OpenApisV3.SchemaJson.Definitions.Response)?.content;
-        const jsonResponse = responseContent?.['application/json'] ?? responseContent?.['*/*'];
-        const ref = raw?.schema?.$ref || jsonResponse?.schema?.$ref;
+        const ref = getResponseRef(raw);
         // if extract field not exist in response, remove it
         if (ref) {
           const fields = recursiveRemoveFieldFromSchema(
@@ -237,20 +285,19 @@ function createItem(api: ParsedOperation, options: ApiCreateOptions = {}): API {
     description = '',
     summary = description,
     parameters = [],
-    responses,
     operationId = '',
+    successResponse,
   } = api;
   const { urlFormatter = (url) => url, nameFormatter = formatApiName } = options;
-  const rawResponse = (responses[200] ?? responses.default) as unknown as Response;
   const temp: API = {
     method: method.toString(),
     url: urlFormatter(rawUri),
     summary,
     name: nameFormatter(method, uri, parameters as unknown as Parameters[], formatApiName),
     parameters: formatParameters(parameters),
-    response: formatResponse((responses[200] ?? responses.default) as unknown as Response),
+    response: formatResponse(successResponse),
     operationId: formatOperationId(operationId),
-    rawResponse,
+    rawResponse: successResponse,
   };
   return temp;
 }

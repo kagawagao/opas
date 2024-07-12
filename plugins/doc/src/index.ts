@@ -1,163 +1,12 @@
-import { OpenAPIPlugin, OpenAPIPluginOptions, ParserResult } from '@opas/core';
+import { OpenAPIPlugin, ParserResult } from '@opas/core';
 import { OpenAPISchemaJSON, ParameterV2, ParsedOperation, SchemaJsonV2 } from '@opas/helper';
 import fs from 'fs-extra';
-import json2md from 'json2md';
 import { kebabCase } from 'lodash';
 import path from 'node:path';
-
-const defaultSymbols = {
-  method: '请求方法',
-  uri: '请求地址',
-  parameters: '请求参数',
-  responses: '返回值',
-  name: '参数名称',
-  type: '参数类型',
-  required: '是否必填',
-  description: '参数描述',
-  headerParameters: '请求头设置',
-  pathParameters: '路径参数',
-  bodyParameters: '请求体参数',
-  queryParameters: '查询参数',
-} as const;
-
-export type Field = Required<SchemaJsonV2>['definitions'][''] & {
-  type?: any;
-  name?: string;
-};
-
-function formatQuoteString(str: string | string[]) {
-  return `\`${str}\``;
-}
-
-function formatSchemaType(schema: any) {
-  const refs: string[] = [];
-  let type = '-';
-  if (schema.type === 'array') {
-    type = schema.type;
-    if (schema.items) {
-      if (Array.isArray(schema.items)) {
-        type = schema.items
-          .map((item: any) => {
-            if (item.$ref) {
-              return `${schema.type}<${item.$ref.split('/').pop()}>`;
-            } else if (item.type) {
-              return `${schema.type}<${item.type}>`;
-            }
-            return '-';
-          })
-          .join('|');
-      } else {
-        if (schema.items.$ref) {
-          type = `${schema.type}<${schema.items.$ref.split('/').pop()}>`;
-          refs.push(schema.items.$ref);
-        } else if (schema.items.type) {
-          type = `${schema.type}<${schema.items.type}>`;
-        }
-      }
-    }
-  } else {
-    type = Array.isArray(schema.type) ? schema.type.join('|') : schema.type ?? '-';
-  }
-
-  return { type, refs };
-}
-
-function formatParameterType(parameter: ParameterV2) {
-  if ('type' in parameter) {
-    return [parameter.type ?? '-'];
-  } else if ('schema' in parameter) {
-    const schemaType = parameter.schema.type;
-    if (schemaType === 'array') {
-      const { type, refs } = formatSchemaType(parameter.schema);
-      return [type, refs];
-    }
-  }
-  return ['-'];
-}
-
-function resolveDefinition(ref: string, definitions: Required<SchemaJsonV2>['definitions']) {
-  const def = ref.split('/').pop() as string;
-  const definition = definitions[def];
-  const properties = definition?.properties;
-  const required = definition?.required || [];
-  const refs: string[] = [];
-  const fields: Field[] = [];
-  if (properties) {
-    Object.entries(properties).forEach(([key, value]) => {
-      if (value.$ref) {
-        const subDefName = value.$ref.split('/').pop() as any;
-        const subDef = definitions[subDefName];
-        if (subDef.properties) {
-          refs.push(value.$ref);
-        }
-        fields.push({
-          name: key,
-          type: subDef.properties ? subDefName : subDef.type,
-          default: '-',
-        });
-      } else {
-        if (value.type === 'array') {
-          const { type, refs: subDefs } = formatSchemaType(value);
-
-          refs.push(...subDefs);
-
-          fields.push({
-            name: key,
-            ...value,
-            type: type as any,
-          });
-        } else {
-          fields.push({
-            name: key,
-            ...value,
-          });
-        }
-      }
-    });
-  }
-  return { fields, refs, name: def, required };
-}
-
-json2md.converters.raw = function (input) {
-  return input;
-};
-
-export type TagAliasMapper = (tag: string) => string;
-
-export interface OpenAPITransformDocPluginOptions extends OpenAPIPluginOptions {
-  /**
-   * output dir
-   */
-  outputDir?: string;
-  /**
-   * grouped by tag
-   */
-  grouped?: boolean;
-  /**
-   * skip output
-   */
-  skipOutput?: boolean;
-  /**
-   * on success callback
-   */
-  onSuccess?: (result: Record<string, string>) => void;
-  /**
-   * tag alias mapper
-   */
-  tagAlias?: TagAliasMapper | Record<string, string>;
-  /**
-   * include apis
-   */
-  include?: ((api: ParsedOperation) => boolean) | RegExp | string[];
-  /**
-   * exclude apis
-   */
-  exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[];
-  /**
-   * symbols
-   */
-  symbols?: Partial<typeof defaultSymbols>;
-}
+import { DEFAULT_SYMBOLS } from './constants';
+import renders from './renders';
+import { APIField, APINode, APIParameter, OpenAPITransformDocPluginOptions } from './types';
+import { formatSchemaType, parseDefinitions, parseParameters } from './utils';
 
 export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITransformDocPluginOptions> {
   public transform = async ({ service, apis, schema }: ParserResult) => {
@@ -170,11 +19,18 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
       exclude,
       skipOutput = false,
       onSuccess,
+      render: docRender = 'md',
       symbols: symbolsFromOptions = {},
     } = this.options;
 
+    const render = typeof docRender === 'string' ? renders[docRender] : docRender;
+
+    if (!render) {
+      throw new Error(`docRender ${docRender} not supported`);
+    }
+
     const symbols = {
-      ...defaultSymbols,
+      ...DEFAULT_SYMBOLS,
       ...symbolsFromOptions,
     };
 
@@ -201,13 +57,7 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
     const result: Record<string, string> = {};
     await Promise.all(
       Object.entries(groupedApis).map(async ([groupName, apis]) => {
-        const filePath = path.resolve(outputDir, `${groupName}.md`);
-        const markdown: json2md.DataObject[] = [
-          // {
-          //   h1: groupName,
-          // },
-        ];
-        apis
+        const apiNodes = apis
           .filter((api) => {
             if (include) {
               if (typeof include === 'function') {
@@ -234,175 +84,158 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
               return true;
             }
           })
-          .forEach((api) => {
-            const { summary, description, rawUri, method, responses } = api;
+          .map((api) => {
+            const { operationId, summary = operationId, description, rawUri, method } = api;
             const parameters = (api.parameters || []) as ParameterV2[];
             // API 名称
-            markdown.push({
-              h2: summary,
-            });
-            if (description) {
-              // API 简介
-              markdown.push({
-                blockquote: description,
-              });
-            }
-
-            markdown.push(
-              {
-                h3: symbols.method,
-              },
-              {
-                raw: formatQuoteString(method.toUpperCase()),
-              },
-              {
-                h3: symbols.uri,
-              },
-              {
-                raw: formatQuoteString(`${service.basePath}${rawUri}`),
-              },
-            );
-
-            function generateDefinitionTable(ref: string, isResponse = false) {
-              const {
-                fields,
-                refs,
-                required = [],
-              } = resolveDefinition(ref, (content as any).definitions || (content as any).components?.schemas || {});
-
-              markdown.push({
-                table: {
-                  headers: [
-                    symbols.name,
-                    symbols.type,
-                    !isResponse ? symbols.required : '',
-                    symbols.description,
-                  ].filter(Boolean),
-                  rows: fields.map((parameter) =>
-                    [
-                      formatQuoteString(parameter.name || '-'),
-                      formatQuoteString(parameter.type || '-'),
-                      !isResponse
-                        ? formatQuoteString((!!(parameter.required || required.includes(parameter.name!))).toString())
-                        : '',
-                      parameter.description || '-',
-                    ].filter(Boolean),
-                  ),
-                },
-              });
-
-              if (refs) {
-                const dedupedRefs = Array.from(new Set(refs.filter((str) => ref !== str)));
-                dedupedRefs.forEach((ref) => {
-                  markdown.push({
-                    raw: `  - \`${ref.split('/').pop()}\``,
-                  });
-                  generateDefinitionTable(ref, isResponse);
-                });
-              }
-            }
-
-            function generateParametersTable(parameters: ParameterV2[]) {
-              const refs: string[] = [];
-              markdown.push({
-                table: {
-                  headers: [symbols.name, symbols.type, symbols.required, symbols.description],
-                  rows: parameters.map((parameter) => {
-                    const [type, resolvedRefs] = formatParameterType(parameter);
-
-                    if (resolvedRefs) {
-                      refs.push(...resolvedRefs);
-                    }
-                    return [
-                      formatQuoteString(parameter.name || '-'),
-                      formatQuoteString(type),
-                      formatQuoteString((!!parameter.required).toString()),
-                      parameter.description || '-',
-                    ];
-                  }),
-                },
-              });
-
-              if (refs.length) {
-                const dedupedRefs = Array.from(new Set(refs));
-                dedupedRefs.forEach((ref) => {
-                  markdown.push({
-                    raw: `  - \`${ref.split('/').pop()}\``,
-                  });
-                  generateDefinitionTable(ref);
-                });
-              }
-            }
+            const node: APINode = {
+              uri: `${service.basePath}${rawUri}`,
+              method: method.toUpperCase(),
+              summary,
+              description,
+            };
 
             if (parameters.length) {
+              node.parameters = [];
               const bodyParameter = parameters.filter((parameter) => parameter.in === 'body')?.[0];
               const headerParameters = parameters.filter((parameter) => parameter.in === 'header');
               const queryParameters = parameters.filter((parameter) => parameter.in === 'query');
               const pathParameters = parameters.filter((parameter) => parameter.in === 'path');
-              markdown.push({
-                h3: symbols.parameters,
-              });
               if (headerParameters.length) {
-                markdown.push({
-                  raw: `- ${symbols.headerParameters}`,
+                node.parameters.push({
+                  type: 'header',
+                  ...parseParameters(headerParameters, content as SchemaJsonV2),
                 });
-                generateParametersTable(headerParameters);
               }
               if (pathParameters.length) {
-                markdown.push({
-                  raw: `- ${symbols.pathParameters}`,
+                node.parameters.push({
+                  type: 'path',
+                  ...parseParameters(pathParameters, content as SchemaJsonV2),
                 });
-                generateParametersTable(pathParameters);
               }
               if (queryParameters.length) {
-                markdown.push({
-                  raw: `- ${symbols.queryParameters}`,
+                node.parameters.push({
+                  type: 'query',
+                  ...parseParameters(queryParameters, content as SchemaJsonV2),
                 });
-                generateParametersTable(queryParameters);
               }
               if (bodyParameter) {
                 // 理论上来说 bodyParameters 只会有一个
-                markdown.push({
-                  raw: `- ${symbols.bodyParameters}`,
-                });
-                if ((bodyParameter as any).schema.$ref) {
-                  generateDefinitionTable((bodyParameter as any).schema.$ref);
+                const apiNodeBodyParameter: APIParameter = {
+                  type: 'body',
+                };
+                if ('schema' in bodyParameter && bodyParameter.schema.$ref) {
+                  const { fields, definitions } = parseDefinitions(bodyParameter.schema.$ref, content as SchemaJsonV2);
+                  apiNodeBodyParameter.fields = fields;
+                  apiNodeBodyParameter.definitions = definitions;
                 } else {
-                  generateParametersTable([bodyParameter]);
+                  const { fields, definitions } = parseParameters([bodyParameter], content as SchemaJsonV2);
+                  apiNodeBodyParameter.fields = fields;
+                  apiNodeBodyParameter.definitions = definitions;
                 }
+
+                node.parameters.push(apiNodeBodyParameter);
               }
             }
 
-            const successResponse = (responses[200] ?? responses.default) as any;
-            const responseContent = (successResponse as any)?.content;
-            const response = responseContent?.['application/json'] ?? responseContent?.['*/*'];
-            console.log(response);
-            if (response?.schema) {
-              markdown.push({
-                h3: symbols.responses,
-              });
-              if (response.schema?.$ref) {
-                generateDefinitionTable(response.schema.$ref, true);
-              } else {
-                markdown.push({
-                  table: {
-                    headers: [symbols.name, symbols.type, symbols.description],
-                    rows: [
-                      [
-                        formatQuoteString(response.name || '-'),
-                        formatQuoteString((response as any).schema.type),
-                        response.description || '-',
+            const successResponse = api.successResponse;
+            if (successResponse) {
+              let ref = '';
+              if ('content' in successResponse) {
+                const responseContent = successResponse.content;
+                const response = responseContent?.['application/json'] ?? responseContent?.['*/*'];
+                if (response?.schema) {
+                  if (response.schema?.$ref) {
+                    ref = response.schema?.$ref;
+                  }
+                }
+              } else if ('$ref' in successResponse) {
+                ref = successResponse.$ref;
+              } else if ('schema' in successResponse && successResponse.schema) {
+                if ('$ref' in successResponse.schema && successResponse.schema.$ref) {
+                  ref = successResponse.schema.$ref;
+                } else if (successResponse.schema.type !== 'file') {
+                  if (successResponse.schema.type === 'array') {
+                    const { type, refs } = formatSchemaType(successResponse.schema);
+                    node.response = {
+                      fields: [
+                        {
+                          name: '',
+                          type,
+                          description: successResponse.schema.description,
+                        },
                       ],
-                    ],
-                  },
-                });
+                    };
+                    if (refs.length) {
+                      node.response.definitions = {};
+                      refs.forEach((ref) => {
+                        const { fields, definitions } = parseDefinitions(ref, content as SchemaJsonV2);
+                        node.response!.definitions![ref.split('/').pop() as string] = fields;
+                        Object.entries(definitions).forEach(([key, value]) => {
+                          node.response!.definitions![key] = value;
+                        });
+                      });
+                    }
+                  } else if (successResponse.schema.type === 'object') {
+                    const resolveRefs: string[] = [];
+                    const fields = Object.entries(successResponse.schema.properties || {}).map(([key, value]) => {
+                      const { type, refs } = formatSchemaType(value);
+                      if (refs) {
+                        resolveRefs.push(...refs);
+                      }
+                      return {
+                        name: key,
+                        type,
+                        description: value.description,
+                      };
+                    });
+                    const definitions: Record<string, APIField[]> = {};
+                    if (resolveRefs.length) {
+                      const dedupedRefs = Array.from(new Set(resolveRefs));
+                      dedupedRefs.forEach((ref) => {
+                        const { fields, definitions: parsedDefinitions } = parseDefinitions(
+                          ref,
+                          content as SchemaJsonV2,
+                        );
+                        definitions[ref.split('/').pop() as string] = fields;
+                        Object.entries(parsedDefinitions).forEach(([key, value]) => {
+                          definitions[key] = value;
+                        });
+                      });
+                    }
+                    node.response = {
+                      fields,
+                      definitions,
+                    };
+                  } else {
+                    node.response = {
+                      fields: [
+                        {
+                          name: '',
+                          type: successResponse.schema.type,
+                          description: successResponse.schema.description,
+                        },
+                      ],
+                    };
+                  }
+                }
+              }
+
+              if (ref) {
+                const { fields, definitions } = parseDefinitions(ref, content as SchemaJsonV2);
+                node.response = {
+                  fields,
+                  definitions,
+                };
               }
             }
+            return node;
           });
-        const markdownContent = json2md(markdown);
-        result[groupName] = markdownContent;
+        const doc = render(apiNodes, symbols);
+        result[groupName] = doc.content;
         if (!skipOutput) {
-          await fs.writeFile(filePath, markdownContent);
+          const filePath = path.resolve(outputDir, `${groupName}.${doc.ext}`);
+          await fs.writeFile(filePath, doc.content);
         }
       }),
     );
