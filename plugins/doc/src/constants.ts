@@ -7,7 +7,7 @@ export const DEFAULT_SYMBOLS: LabelSymbols = {
   responses: '返回值',
   name: '参数名称',
   type: '参数类型',
-  required: '是否必填',
+  required: '是否必须',
   description: '参数描述',
   headerParameters: '请求头设置',
   pathParameters: '路径参数',

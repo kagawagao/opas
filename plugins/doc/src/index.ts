@@ -89,7 +89,7 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
             const parameters = (api.parameters || []) as ParameterV2[];
             // API 名称
             const node: APINode = {
-              uri: `${service.basePath}${rawUri}`,
+              uri: `${service.basePath}${rawUri}`.replace(/\/\//, '/'),
               method: method.toUpperCase(),
               summary,
               description,
