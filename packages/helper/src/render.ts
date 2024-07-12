@@ -234,7 +234,7 @@ function createCalleeArgs(url: string, method: string, parameters: API['paramete
   }
   let configStr = `
   {
-    url: \`${url}\`,
+    url: ${url.includes('${') ? '`' + url + '`' : `'${url}'`},
     method: '${method}',
   `;
   if (bodyParams.length) {
