@@ -3,7 +3,8 @@ import { OpenAPISchemaJSON, ParameterV2, ParsedOperation, SchemaJsonV2 } from '@
 import fs from 'fs-extra';
 import { kebabCase } from 'lodash';
 import path from 'node:path';
-import { DEFAULT_SYMBOLS } from './constants';
+import { DEFAULT_LOCALE } from './constants';
+import locales from './locales';
 import renders from './renders';
 import { APIField, APINode, APIParameter, OpenAPITransformDocPluginOptions } from './types';
 import { formatSchemaType, parseDefinitions, parseParameters } from './utils';
@@ -17,10 +18,8 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
       grouped,
       include,
       exclude,
-      skipOutput = false,
-      onSuccess,
       render: docRender = 'md',
-      symbols: symbolsFromOptions = {},
+      locale = {},
     } = this.options;
 
     const render = typeof docRender === 'string' ? renders[docRender] : docRender;
@@ -29,14 +28,12 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
       throw new Error(`docRender ${docRender} not supported`);
     }
 
-    const symbols = {
-      ...DEFAULT_SYMBOLS,
-      ...symbolsFromOptions,
-    };
+    const localData = typeof locale === 'string' ? locales[locale] : locale;
 
-    if (!skipOutput) {
-      await fs.ensureDir(outputDir);
-    }
+    const symbols = {
+      ...DEFAULT_LOCALE,
+      ...localData,
+    };
 
     const content = schema.content as OpenAPISchemaJSON;
     // 理论上来说，这里的 tags 包含了所有的 tag
@@ -54,7 +51,7 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
     } else {
       groupedApis[kebabCase(service.name)] = apis;
     }
-    const result: Record<string, string> = {};
+    const result: Record<string, string | Buffer> = {};
     await Promise.all(
       Object.entries(groupedApis).map(async ([groupName, apis]) => {
         const apiNodes = apis
@@ -231,15 +228,12 @@ export default class SwaggerTransformDocPlugin extends OpenAPIPlugin<OpenAPITran
             }
             return node;
           });
-        const doc = render(apiNodes, symbols);
+        const doc = await render(apiNodes, symbols);
         result[groupName] = doc.content;
-        if (!skipOutput) {
-          const filePath = path.resolve(outputDir, `${groupName}.${doc.ext}`);
-          await fs.writeFile(filePath, doc.content);
-        }
+        await fs.ensureDir(outputDir);
+        const filePath = path.resolve(outputDir, `${groupName}.${doc.ext}`);
+        await fs.writeFile(filePath, doc.content);
       }),
     );
-
-    onSuccess?.(result);
   };
 }

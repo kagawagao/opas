@@ -12,6 +12,7 @@ describe('doc', () => {
         plugins: [
           new OpenAPITransformDocPlugin({
             outputDir: path.resolve(__dirname, './fixtures'),
+            render: 'doc',
           }),
         ],
       },
@@ -27,6 +28,7 @@ describe('doc', () => {
         plugins: [
           new OpenAPITransformDocPlugin({
             outputDir: path.resolve(__dirname, './fixtures'),
+            render: 'md',
           }),
         ],
       },

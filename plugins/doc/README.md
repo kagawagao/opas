@@ -31,14 +31,19 @@ OpenAPIRunner.run([
 
 ## Plugin Options
 
-| Option       | Type                                                         | Description              |
-| ------------ | ------------------------------------------------------------ | ------------------------ |
-| `outputDir`  | `string?`                                                    | output directory         |
-| `grouped`    | `boolean?`                                                   | grouped by tag           |
-| `skipOutput` | `boolean?`                                                   | skip output              |
-| `onSuccess`  | `(result: Record<string, string>) => void?`                  | on success callback      |
-| `tagAlias`   | `TagAliasMapper \| Record<string, string>?`                  | tag alias mapper         |
-| `include`    | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | include apis             |
-| `exclude`    | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | exclude apis             |
-| `symbols`    | `Partial<LabelSymbol>?`                                      | symbols                  |
-| `render`     | `DocumentRender \| 'md'?`                                    | custom document renderer |
+| Option      | Type                                                         | Description                                                                              |
+| ----------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `outputDir` | `string?`                                                    | output directory                                                                         |
+| `grouped`   | `boolean?`                                                   | grouped by tag                                                                           |
+| `tagAlias`  | `TagAliasMapper \| Record<string, string>?`                  | tag alias mapper                                                                         |
+| `include`   | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | include apis                                                                             |
+| `exclude`   | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | exclude apis                                                                             |
+| `locale`    | `Partial<LocaleData> \| string?`                             | locale data or internal support locale                                                   |
+| `render`    | `DocumentRender \| 'InternalRenderType'?`                    | specify render type or use custom render, see [Support Render](#support-render) for more |
+
+## Support Render
+
+- `md`: markdown
+- `doc`: word document
+
+> PRs are welcome to add more render support.

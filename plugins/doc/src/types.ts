@@ -1,7 +1,10 @@
 import { OpenAPIPluginOptions } from '@opas/core';
 import { ParsedOperation, SchemaJsonV2 } from '@opas/helper';
+import locales from './locales';
 
-export interface LabelSymbols {
+export type InternalRenderType = 'md' | 'doc';
+
+export interface LocaleData {
   method: string;
   uri: string;
   parameters: string;
@@ -25,12 +28,12 @@ export type Field = Required<SchemaJsonV2>['definitions'][''] & {
 export type TagAliasMapper = (tag: string) => string;
 
 export interface Document {
-  content: string;
+  content: string | Buffer;
   ext: string;
 }
 
 export interface DocumentRender {
-  (nodes: APINode[], symbols: LabelSymbols): Document;
+  (nodes: APINode[], locales: LocaleData): Document | Promise<Document>;
 }
 
 export interface OpenAPITransformDocPluginOptions extends OpenAPIPluginOptions {
@@ -42,14 +45,6 @@ export interface OpenAPITransformDocPluginOptions extends OpenAPIPluginOptions {
    * grouped by tag
    */
   grouped?: boolean;
-  /**
-   * skip output
-   */
-  skipOutput?: boolean;
-  /**
-   * on success callback
-   */
-  onSuccess?: (result: Record<string, string>) => void;
   /**
    * tag alias mapper
    */
@@ -63,10 +58,13 @@ export interface OpenAPITransformDocPluginOptions extends OpenAPIPluginOptions {
    */
   exclude?: ((api: ParsedOperation) => boolean) | RegExp | string[];
   /**
-   * symbols
+   * custom locale data, default is zh-cn
    */
-  symbols?: Partial<LabelSymbols>;
-  render?: DocumentRender | 'md';
+  locale?: LocaleData | keyof typeof locales;
+  /**
+   * specify render type or use custom render
+   */
+  render?: DocumentRender | InternalRenderType;
 }
 
 export interface APIField {
