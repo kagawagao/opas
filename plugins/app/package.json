@@ -1,6 +1,6 @@
 {
   "name": "@opas/plugin-app",
-  "version": "0.11.4",
+  "version": "0.12.0",
   "description": "app plugin for OpenAPI Toolkit",
   "main": "lib/index.js",
   "types": "index.d.ts",
@@ -32,8 +32,8 @@
   },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
-    "@opas/core": "^0.11.4",
-    "@opas/helper": "^0.11.4",
+    "@opas/core": "^0.12.0",
+    "@opas/helper": "^0.12.0",
     "fs-extra": "^11.2.0"
   }
 }

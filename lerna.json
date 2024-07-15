@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "0.11.4",
+  "version": "0.12.0",
   "packages": ["packages/*", "plugins/*"],
   "ignoreChanges": ["**/test/**", "**/*.md", "**/package-lock.json"],
   "command": {

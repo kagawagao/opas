@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/kagawagao/opas/compare/v0.11.4...v0.12.0) (2024-07-15)
+
+### Features
+
+- **plugins:doc:** support doc render ([9f97461](https://github.com/kagawagao/opas/commit/9f97461d3a15c8b5721878d97bb2cd7df30649e4))
+
 ## [0.11.4](https://github.com/kagawagao/opas/compare/v0.11.3...v0.11.4) (2024-07-12)
 
 ### Bug Fixes

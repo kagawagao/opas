@@ -1,6 +1,6 @@
 {
   "name": "@opas/plugin-doc",
-  "version": "0.11.4",
+  "version": "0.12.0",
   "description": "document plugin for OpenAPI Toolkit",
   "main": "lib/index.js",
   "types": "index.d.ts",
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
-    "@opas/core": "^0.11.4",
+    "@opas/core": "^0.12.0",
     "docx": "^8.5.0",
     "fs-extra": "^11.2.0",
     "json2md": "^2.0.0"
