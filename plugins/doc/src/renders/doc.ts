@@ -1,4 +1,15 @@
-import { Document, HeadingLevel, ISectionOptions, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from 'docx';
+import {
+  Document,
+  HeadingLevel,
+  ISectionOptions,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  TextRun,
+  WidthType,
+} from 'docx';
 import { FileChild } from 'docx/build/file/file-child';
 import { APIField, DocumentRender, LocaleData } from '../types';
 
@@ -15,18 +26,23 @@ function renderTable(fields: APIField[], locales: LocaleData) {
     rows: [
       new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: locales.name })] })] }),
-          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: locales.type })] })] }),
           new TableCell({
-            children: [new Paragraph({ children: [new TextRun({ text: locales.required })] })],
+            children: [new Paragraph({ children: [new TextRun({ text: locales.name, bold: true })] })],
           }),
           new TableCell({
-            children: [new Paragraph({ children: [new TextRun({ text: locales.default })] })],
+            children: [new Paragraph({ children: [new TextRun({ text: locales.type, bold: true })] })],
           }),
           new TableCell({
-            children: [new Paragraph({ children: [new TextRun({ text: locales.description })] })],
+            children: [new Paragraph({ children: [new TextRun({ text: locales.required, bold: true })] })],
+          }),
+          new TableCell({
+            children: [new Paragraph({ children: [new TextRun({ text: locales.default, bold: true })] })],
+          }),
+          new TableCell({
+            children: [new Paragraph({ children: [new TextRun({ text: locales.description, bold: true })] })],
           }),
         ],
+        tableHeader: true,
       }),
       ...fields.map((field) => {
         return new TableRow({
@@ -54,6 +70,11 @@ function renderTable(fields: APIField[], locales: LocaleData) {
         });
       }),
     ],
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    layout: 'fixed',
   });
 }
 

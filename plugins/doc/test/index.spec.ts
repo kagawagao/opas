@@ -13,6 +13,7 @@ describe('doc', () => {
           new OpenAPITransformDocPlugin({
             outputDir: path.resolve(__dirname, './fixtures'),
             render: 'doc',
+            locale: 'en-us',
           }),
         ],
       },
