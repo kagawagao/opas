@@ -39,7 +39,7 @@ OpenAPIRunner.run([
 | `include`   | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | include apis                                                                             |
 | `exclude`   | `((api: ParsedOperation) => boolean) \| RegExp \| string[]?` | exclude apis                                                                             |
 | `locale`    | `Partial<LocaleData> \| string?`                             | locale data or internal support locale                                                   |
-| `render`    | `DocumentRender \| 'InternalRenderType'?`                    | specify render type or use custom render, see [Support Render](#support-render) for more |
+| `render`    | `DocumentRender \| InternalRenderType?`                      | specify render type or use custom render, see [Support Render](#support-render) for more |
 
 ## Support Render
 
