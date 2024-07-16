@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.1](https://github.com/kagawagao/opas/compare/v0.12.0...v0.12.1) (2024-07-16)
+
+### Bug Fixes
+
+- **plugins:doc:** fix word table style ([5da4fd3](https://github.com/kagawagao/opas/commit/5da4fd36e9785b02ae55b74cf4f25799bd59fa82))
+
 # [0.12.0](https://github.com/kagawagao/opas/compare/v0.11.4...v0.12.0) (2024-07-15)
 
 ### Features

@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.1](https://github.com/kagawagao/opas/compare/v0.12.0...v0.12.1) (2024-07-16)
+
+**Note:** Version bump only for package @opas/cli
+
 # [0.12.0](https://github.com/kagawagao/opas/compare/v0.11.4...v0.12.0) (2024-07-15)
 
 **Note:** Version bump only for package @opas/cli
