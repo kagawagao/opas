@@ -1,6 +1,9 @@
 /**
- * format api uri
+ * remove path params from uri
  */
-export function formatApiUri(uri: string) {
-  return uri.replace(/\/\{.+\}/g, '');
+export function removeUriPathParams(uri: string) {
+  return uri
+    .split('/')
+    .filter((str) => !(str.startsWith('{') && str.endsWith('}')))
+    .join('/');
 }

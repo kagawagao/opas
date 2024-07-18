@@ -5,8 +5,8 @@ import {
   PathItem,
   ServiceDescriptor,
   camelCase,
-  formatApiUri,
   pascalCase,
+  removeUriPathParams,
 } from '@opas/helper';
 import dtsGenerator, { Schema, readSchemaFromUrl, readSchemasFromFile } from 'dtsgenerator';
 import { OpenApisV2 } from 'dtsgenerator/dist/core/openApiV2';
@@ -136,7 +136,7 @@ export default class OpenAPIParser {
     const { paths } = content;
     for (const uri in paths) {
       const pathItem = paths[uri] as PathItem;
-      const formattedUri = formatApiUri(uri);
+      const formattedUri = removeUriPathParams(uri);
       for (const method in pathItem) {
         const operation = pathItem[method as keyof PathItem] as Operation;
         if ('requestBody' in operation && operation.requestBody) {
