@@ -8,10 +8,11 @@
   ],
   "scripts": {
     "test": "lerna run test",
-    "postinstall": "husky",
+    "postinstall": "husky init",
     "lint": "eslint . --ext=.ts,.tsx,.js,.jsx --fix",
     "build": "lerna run build",
-    "release": "lerna publish --conventional-commits"
+    "release": "lerna publish --conventional-commits",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
