@@ -1,4 +1,4 @@
-import { toTypeName } from 'dtsgenerator/dist/core/validateIdentifier';
+import { toTypeName, toValidIdentifier } from 'dtsgenerator/dist/core/validateIdentifier';
 import { startCase } from 'lodash';
 import { ScriptTarget } from 'typescript';
 
@@ -19,4 +19,8 @@ export function formatGenerics(type: string): string {
  */
 export function formatTypeName(str: string) {
   return toTypeName(str, ScriptTarget.Latest);
+}
+
+export function formatIdentifierName(str: string) {
+  return toValidIdentifier(str, ScriptTarget.Latest);
 }

@@ -6,7 +6,6 @@ import {
   ServiceDescriptor,
   camelCase,
   pascalCase,
-  removeUriPathParams,
 } from '@opas/helper';
 import dtsGenerator, { Schema, readSchemaFromUrl, readSchemasFromFile } from 'dtsgenerator';
 import { OpenApisV2 } from 'dtsgenerator/dist/core/openApiV2';
@@ -136,7 +135,6 @@ export default class OpenAPIParser {
     const { paths } = content;
     for (const uri in paths) {
       const pathItem = paths[uri] as PathItem;
-      const formattedUri = removeUriPathParams(uri);
       for (const method in pathItem) {
         const operation = pathItem[method as keyof PathItem] as Operation;
         if ('requestBody' in operation && operation.requestBody) {
@@ -167,9 +165,7 @@ export default class OpenAPIParser {
 
         const parsedOperation: ParsedOperation = {
           ...operation,
-          uri: formattedUri,
-          formattedUri,
-          rawUri: uri,
+          uri,
           method,
           operationId: operation.operationId || uniqueId(),
           successResponse,
@@ -179,7 +175,7 @@ export default class OpenAPIParser {
       }
     }
     // sort apis by uri
-    return apis.sort((a, b) => a.rawUri.localeCompare(b.rawUri));
+    return apis.sort((a, b) => a.uri.localeCompare(b.uri));
   };
 
   /**

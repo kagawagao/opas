@@ -192,8 +192,8 @@ export interface ServiceDescriptor {
 
 export type ParsedOperation = Operation & {
   uri: string;
-  rawUri: string;
-  formattedUri: string;
+  // rawUri: string;
+  // formattedUri: string;
   method: string;
   operationId: string;
   successResponse?: ResponseValue;

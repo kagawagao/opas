@@ -5,7 +5,7 @@ import camelcase from 'camelcase';
 import { Schema } from 'dtsgenerator';
 import { pascalCase } from './case';
 import { SUPPORT_PARAMETERS_TYPES } from './constants';
-import { formatGenerics, formatTypeName } from './identifier';
+import { formatIdentifierName, formatTypeName } from './identifier';
 import { formatService } from './service';
 import { getTemplateParams } from './template';
 import {
@@ -22,14 +22,15 @@ function isSupportParametersType(type: string) {
   return SUPPORT_PARAMETERS_TYPES.includes(type);
 }
 
-function formatApiName(method: string, url: string, parameters: Parameters[]) {
+function formatAPIFunctionName(method: string, url: string, parameters: Parameters[]) {
   const pathParameters = parameters.filter((parameter) => parameter.in === 'path').map((parameter) => parameter.name);
   const suffix = pathParameters.length ? 'By' + pathParameters.map((name) => pascalCase(name)).join('And') : '';
   const apiName = url
     .split('/')
     .filter((name) => !pathParameters.map((parameter) => `{${parameter}}`).includes(name))
-    .map((str) => pascalCase(formatGenerics(str)))
+    .map((str) => pascalCase(formatIdentifierName(str)))
     .join('');
+
   return camelcase(method.toLowerCase() + apiName + suffix);
 }
 
@@ -281,25 +282,23 @@ function createItem(api: ParsedOperation, options: ApiCreateOptions = {}): API {
   const {
     method,
     uri,
-    rawUri,
     description = '',
     summary = description,
     parameters = [],
     operationId = '',
     successResponse,
   } = api;
-  const { urlFormatter = (url) => url, nameFormatter = formatApiName } = options;
-  const temp: API = {
+  const { urlFormatter = (url) => url, nameFormatter = formatAPIFunctionName } = options;
+  return {
     method: method.toString(),
-    url: urlFormatter(rawUri),
+    url: urlFormatter(uri),
     summary,
-    name: nameFormatter(method, uri, parameters as unknown as Parameters[], formatApiName),
+    name: nameFormatter(method, uri, parameters as unknown as Parameters[], formatAPIFunctionName),
     parameters: formatParameters(parameters),
     response: formatResponse(successResponse),
     operationId: formatOperationId(operationId),
     rawResponse: successResponse,
   };
-  return temp;
 }
 
 export function createRenderer(templateSource: string, options?: ApiCreateOptions) {
