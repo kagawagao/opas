@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/kagawagao/opas/compare/v0.12.1...v0.13.0) (2024-08-06)
+
+### Features
+
+- **cli:** use @inquirer/prompts instead ([058cbf9](https://github.com/kagawagao/opas/commit/058cbf9270309b077ae9f762fea44e678d5db449))
+
 ## [0.12.1](https://github.com/kagawagao/opas/compare/v0.12.0...v0.12.1) (2024-07-16)
 
 **Note:** Version bump only for package @opas/cli
