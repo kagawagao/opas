@@ -1,4 +1,4 @@
-import inquirer from '@inquirer/prompts';
+import { confirm } from '@inquirer/prompts';
 import fs from 'fs/promises';
 import path from 'node:path';
 import { configExplore, logger } from './utils';
@@ -18,7 +18,7 @@ const templates = {
 
 async function generateConfigFile() {
   try {
-    const useTypeScript = await inquirer.confirm({
+    const useTypeScript = await confirm({
       message: 'Would you like to use TypeScript?',
       default: true,
     });
@@ -37,7 +37,7 @@ const initConfig = async () => {
   // check if the file already exists
   const searchResult = await configExplore.search(process.cwd());
   if (searchResult?.filepath) {
-    const overwrite = await inquirer.confirm({
+    const overwrite = await confirm({
       message: 'Config file already exists. Do you want to overwrite it?',
       default: false,
     });
