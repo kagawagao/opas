@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.1](https://github.com/kagawagao/opas/compare/v0.13.0...v0.13.1) (2024-08-07)
+
+### Bug Fixes
+
+- **cli:** fix inquirer import error ([57e915e](https://github.com/kagawagao/opas/commit/57e915ec46b552a051644869118b8a979c3fa70a))
+
 # [0.13.0](https://github.com/kagawagao/opas/compare/v0.12.1...v0.13.0) (2024-08-06)
 
 ### Features
