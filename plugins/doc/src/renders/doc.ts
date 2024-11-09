@@ -1,5 +1,6 @@
 import {
   Document,
+  FileChild,
   HeadingLevel,
   ISectionOptions,
   Packer,
@@ -10,7 +11,6 @@ import {
   TextRun,
   WidthType,
 } from 'docx';
-import { FileChild } from 'docx/build/file/file-child';
 import { APIField, DocumentRender, LocaleData } from '../types';
 
 function formatType(type: string | string[] | undefined) {

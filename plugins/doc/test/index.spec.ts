@@ -18,7 +18,7 @@ describe('doc', () => {
         ],
       },
     ]);
-    const fileContent = await fs.readFile(path.resolve(__dirname, './fixtures/pets-store.md'), 'utf-8');
+    const fileContent = await fs.readFile(path.resolve(__dirname, './fixtures/pets-store.docx'), 'utf-8');
     expect(fileContent.trim()).not.toEqual('');
   });
   it('should generate doc with open api v2', async () => {

@@ -32,7 +32,7 @@ export function formatSchemaType(schema: any) {
       }
     }
   } else {
-    type = Array.isArray(schema.type) ? schema.type.join('|') : schema.type ?? '-';
+    type = Array.isArray(schema.type) ? schema.type.join('|') : (schema.type ?? '-');
   }
 
   return { type, refs };
@@ -104,7 +104,7 @@ export function parseDefinitions(ref: string, content: SchemaJsonV2) {
   const apiFields: APIField[] = fields.map((field) => ({
     name: field.name as string,
     type: field.type,
-    required: !!field.required ?? required.includes(field.name as string),
+    required: field.required?.includes(field.name as string) ?? required.includes(field.name as string),
     description: field.description,
     default: field.default,
   }));
