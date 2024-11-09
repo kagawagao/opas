@@ -1,6 +1,6 @@
 {
   "name": "@opas/helper",
-  "version": "0.13.0",
+  "version": "1.0.0",
   "description": "helpers for OpenAPI Toolkit",
   "main": "lib/index.js",
   "types": "index.d.ts",

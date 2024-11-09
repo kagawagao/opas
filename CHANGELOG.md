@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/kagawagao/opas/compare/v0.13.1...v1.0.0) (2024-11-09)
+
+### Bug Fixes
+
+- bugfix ([96b1201](https://github.com/kagawagao/opas/commit/96b1201921405f93f9b195775bc9e06fbffa40ba))
+
 ## [0.13.1](https://github.com/kagawagao/opas/compare/v0.13.0...v0.13.1) (2024-08-07)
 
 ### Bug Fixes
