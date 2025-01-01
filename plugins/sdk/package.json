@@ -1,6 +1,6 @@
 {
   "name": "@opas/plugin-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "sdk plugin for OpenAPI toolkit",
   "main": "lib/index.js",
   "types": "index.d.ts",
@@ -33,7 +33,7 @@
     "@babel/generator": "^7.23.6",
     "@babel/template": "^7.22.15",
     "@babel/types": "^7.23.6",
-    "@opas/core": "^1.0.0",
+    "@opas/core": "^1.0.1",
     "@opas/helper": "^1.0.0",
     "fs-extra": "^11.2.0",
     "lodash": "^4.17.21"
