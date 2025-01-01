@@ -141,13 +141,42 @@ export default class OpenAPIParser {
           const { requestBody } = operation;
           operation.parameters = operation.parameters || [];
           const required = '$ref' in requestBody ? true : requestBody.required;
-          const schema = 'content' in requestBody ? Object.values(requestBody.content)[0].schema : requestBody;
-          operation.parameters.push({
-            name: 'body',
-            in: 'body',
-            required,
-            schema: schema as any,
-          });
+          // check is formData
+          if ('content' in requestBody) {
+            Object.entries(requestBody.content).forEach(([mediaType, content]) => {
+              const schema = content.schema;
+              if (mediaType.includes('form-data')) {
+                operation.parameters!.push({
+                  name: 'formData',
+                  in: 'formData',
+                  required,
+                  schema: schema as any,
+                });
+              } else if (mediaType.includes('application/x-www-form-urlencoded')) {
+                operation.parameters!.push({
+                  name: 'query',
+                  in: 'query',
+                  required,
+                  schema: schema as any,
+                });
+              } else {
+                operation.parameters!.push({
+                  name: 'body',
+                  in: 'body',
+                  required,
+                  schema: schema as any,
+                });
+              }
+            });
+          } else {
+            const schema = requestBody;
+            operation.parameters.push({
+              name: 'body',
+              in: 'body',
+              required,
+              schema: schema as any,
+            });
+          }
         }
 
         let successResponseKey = '200';
