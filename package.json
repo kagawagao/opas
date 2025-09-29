@@ -33,7 +33,7 @@
     "@babel/preset-env": "^7.23.6",
     "@babel/preset-typescript": "^7.23.3",
     "@commitlint/cli": "^19.1.0",
-    "@commitlint/config-conventional": "^19.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@pixas/eslint-config": "^0.13.0",
     "@pixas/prettier-config": "^0.13.0",
     "@types/fs-extra": "^11.0.4",
