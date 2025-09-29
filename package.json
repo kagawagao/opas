@@ -45,7 +45,7 @@
     "dts-bundle-generator": "^9.0.0",
     "husky": "^9.0.6",
     "jest": "^30.0.0",
-    "lerna": "^8.0.1",
+    "lerna": "^9.0.0",
     "lint-staged": "^16.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
