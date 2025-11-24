@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
-    "@inquirer/prompts": "^7.0.0",
+    "@inquirer/prompts": "^8.0.1",
     "@opas/core": "^1.0.1",
     "@opas/plugin-app": "^1.0.1",
     "@opas/plugin-doc": "^1.0.1",
