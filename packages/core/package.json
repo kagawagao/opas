@@ -37,6 +37,6 @@
     "@dtsgenerator/replace-namespace": "^1.6.0",
     "@opas/helper": "^1.0.0",
     "dtsgenerator": "^3.19.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.18.1"
   }
 }
