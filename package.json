@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "devDependencies": {
-    "@babel/cli": "^7.23.4",
+    "@babel/cli": "^8.0.1",
     "@babel/preset-env": "^7.23.6",
     "@babel/preset-typescript": "^7.23.3",
     "@commitlint/cli": "^21.0.0",
