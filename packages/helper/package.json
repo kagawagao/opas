@@ -33,7 +33,7 @@
     "@babel/template": "^8.0.0",
     "camelcase": "^6.3.0",
     "dtsgenerator": "^3.19.1",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.1",
     "signale": "^1.4.0"
   }
 }
