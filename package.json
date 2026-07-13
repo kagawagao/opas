@@ -48,7 +48,7 @@
     "lerna": "^9.0.0",
     "lint-staged": "^17.0.4",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.2"
+    "typescript": "^7.0.2"
   },
   "prettier": "@pixas/prettier-config",
   "lint-staged": {
