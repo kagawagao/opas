@@ -32,7 +32,7 @@
   "dependencies": {
     "@opas/core": "^1.0.1",
     "docx": "^9.7.2",
-    "fs-extra": "^11.4.0",
+    "fs-extra": "^11.4.1",
     "json2md": "^2.0.0"
   }
 }
