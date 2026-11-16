@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
-    "@dtsgenerator/replace-namespace": "^1.6.0",
+    "@dtsgenerator/replace-namespace": "^2.0.0",
     "@opas/helper": "^1.0.0",
     "dtsgenerator": "^3.19.1",
     "lodash": "^4.18.1"
