@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/kagawagao/opas#readme",
   "dependencies": {
-    "@babel/template": "^8.0.0",
+    "@babel/template": "^8.1.2",
     "camelcase": "^6.3.0",
     "dtsgenerator": "^4.0.1",
     "prettier": "^3.10.1",
